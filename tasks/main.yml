@@ -1,0 +1,76 @@
+---
+- name: download .deb file
+  get_url:
+    dest=/tmp/rundeck-{{ rundeck_version }}.deb
+    url=http://download.rundeck.org/deb/rundeck-{{ rundeck_version }}.deb
+    mode=0644
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: install from .deb package
+  command: dpkg --skip-same-version -i {{ temp_dir }}/rundeck-{{ rundeck_version }}.deb
+  register: dpkg_result
+  changed_when: "dpkg_result.stdout.startswith('Selecting')"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - install
+    - packages
+
+# corrections to run with other jetty applications
+#  create groups and adjust user
+- name: create jetty group
+  group:
+    name=jetty
+    system=yes
+  tags:
+    - rundeck
+    - users
+    - groups
+
+- name: adjust rundeck user
+  user:
+    name=rundeck
+    groups=jetty
+  tags:
+    - rundeck
+    - users
+    - groups
+
+# configuration adjustment
+- name: adjust upstart setgid configuration
+  lineinfile:
+    dest=/etc/init/rundeckd.conf
+    regexp="^setgid "
+    line="setgid jetty"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+
+- name: adjust main configuration
+  lineinfile:
+    dest=/etc/rundeck/rundeck-config.properties
+    regexp="^grails.serverURL="
+    line="grails.serverURL=http://rundeck.{{ rundeck_domain }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+
+- name: download rundeck plugins
+  get_url:
+    dest=/var/lib/rundeck/libext/{{ item.file }}
+    url={{ item.url }}
+  with_items: rundeck_plugins
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - plugins
+
