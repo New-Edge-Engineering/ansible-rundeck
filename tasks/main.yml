@@ -65,8 +65,8 @@
 
 - name: download rundeck plugins
   get_url:
-    dest=/var/lib/rundeck/libext/{{ item.file }}
-    url={{ item.url }}
+    dest=/var/lib/rundeck/libext/
+    url={{ item }}
   with_items: rundeck_plugins
   notify:
     - restart rundeck
