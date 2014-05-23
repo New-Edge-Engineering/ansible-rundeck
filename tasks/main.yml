@@ -63,6 +63,10 @@
     - rundeck
     - configuration
 
+# database setup
+- include: postgresql.yml
+  when: rundeck_database_type == 'postgresql'
+
 - name: download rundeck plugins
   get_url:
     dest=/var/lib/rundeck/libext/

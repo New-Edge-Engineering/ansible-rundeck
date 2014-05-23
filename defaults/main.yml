@@ -5,3 +5,8 @@ temp_dir: /tmp
 rundeck_version: 2.0.3-1-GA  # desired version of rundeck.
 rundeck_plugins: []          # list of plugin urls that are downloaded and installed into the rundeck libext.
 rundeck_domain: example.com  # the domain and tdl that the web application with accessed by.
+rundeck_database_type: 'hsqldb'
+rundeck_database_host: 'localhost'
+rundeck_database_port: '5432'
+rundeck_database_user: 'rundeck'
+rundeck_database_pass: 'rundeck'
