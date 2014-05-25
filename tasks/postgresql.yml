@@ -23,11 +23,59 @@
     - jdbc
     - postgresql
 
-- name: adjust main configuration
+- name: Rundeck - PostgreSQL | update database connection in configuration
   lineinfile:
     dest=/etc/rundeck/rundeck-config.properties
     regexp="^dataSource.url"
-    line="dataSource.url=jdbc:postgresql://{{ rundeck_database_host }}:{{ rundeck_database_port}}/rundeck"
+    line="dataSource.url=jdbc:postgresql://{{ rundeck_database_host }}:{{ rundeck_database_port }}/{{ rundeck_database_name }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+    - postgresql
+
+- name: Rundeck - PostgreSQL | update database driver in configuration
+  lineinfile:
+    dest=/etc/rundeck/rundeck-config.properties
+    regexp="^dataSource.driverClassName"
+    line="dataSource.driverClassName=org.postgresql.Driver"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+    - postgresql
+
+- name: Rundeck - PostgreSQL | update database dialect in configuration
+  lineinfile:
+    dest=/etc/rundeck/rundeck-config.properties
+    regexp="^dataSource.dialect"
+    line="dataSource.dialect=org.hibernate.dialect.PostgreSQLDialect"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+    - postgresql
+
+- name: Rundeck - PostgreSQL | update database username in configuration
+  lineinfile:
+    dest=/etc/rundeck/rundeck-config.properties
+    regexp="^dataSource.username"
+    line="dataSource.username={{ rundeck_database_user }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+    - postgresql
+
+- name: Rundeck - PostgreSQL | update database password in configuration
+  lineinfile:
+    dest=/etc/rundeck/rundeck-config.properties
+    regexp="^dataSource.password"
+    line="dataSource.password={{ rundeck_database_pass }}"
   notify:
     - restart rundeck
   tags:

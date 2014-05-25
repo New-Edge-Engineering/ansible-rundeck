@@ -8,5 +8,6 @@ rundeck_domain: example.com  # the domain and tdl that the web application with 
 rundeck_database_type: 'hsqldb'
 rundeck_database_host: 'localhost'
 rundeck_database_port: '5432'
+rundeck_database_name: 'rundeck'
 rundeck_database_user: 'rundeck'
 rundeck_database_pass: 'rundeck'
