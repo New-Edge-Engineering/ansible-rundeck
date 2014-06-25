@@ -37,6 +37,7 @@
     groups=jetty
     createhome=yes
     home=/var/lib/rundeck
+    system=yes
   tags:
     - rundeck
     - users
