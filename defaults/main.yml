@@ -2,7 +2,7 @@
 # OS
 temp_dir: /tmp
 # Rundeck
-rundeck_version: 2.0.3-1-GA  # desired version of rundeck.
+rundeck_version: 2.2.3-1-GA  # desired version of rundeck.
 rundeck_plugins: []          # list of plugin urls that are downloaded and installed into the rundeck libext.
 rundeck_domain: example.com  # the domain and tdl that the web application with accessed by.
 rundeck_database_type: 'hsqldb'
