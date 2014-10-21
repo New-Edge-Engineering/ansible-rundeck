@@ -1,9 +1,15 @@
 ---
+- name: Rundeck | Check to see if download exists
+  stat:
+    path: /tmp/rundeck-{{ rundeck_version }}.deb
+  register: rundeck_download_check
+
 - name: download .deb file
   get_url:
     dest=/tmp/rundeck-{{ rundeck_version }}.deb
     url=http://download.rundeck.org/deb/rundeck-{{ rundeck_version }}.deb
     mode=0644
+  when: rundeck_download_check.stat.exists == false
   tags:
     - rundeck
     - install
