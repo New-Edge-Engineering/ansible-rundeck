@@ -25,9 +25,7 @@ The following roles need to have been completed before executing this one:
 
  * **smola.java:**
    * **Debian:** Ensure java_packages has a debian java package in it, i.e. openjdk-7-jre-headless
-   * **RedHat:** Ensure java_packages has a debian java package in it, i.e. openjdk-7-jre-headless, had to adjust role to include RedHat.yml in main.yml to work.
-
-## Tests
+   * **RedHat:** Ensure java_packages has a debian java package in it, i.e. java-1.7.0-openjdk, had to adjust role to include RedHat.yml in main.yml to work.
 
 ## License
 

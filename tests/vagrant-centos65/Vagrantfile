@@ -16,7 +16,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "chef/centos-6.5"
 
   ## identifier
-  config.vm.hostname = "vagrant-ansible-rundeck-precise64"
+  config.vm.hostname = "vagrant-ansible-rundeck-centos6"
   ## Network
   config.vm.network "private_network", ip: IP_ADDRESS
   config.vm.network "forwarded_port", guest: 4440, host: HTTP_PORT  # Web server

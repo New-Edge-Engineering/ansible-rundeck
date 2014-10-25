@@ -10,10 +10,10 @@ galaxy_info:
     versions:
     - precise
     - trusty
-  - name: Centos
+  - name: EL
     versions:
-    - 6.5
-    - 7.0
+    - 6
+    - 7
   categories:
   - system
 
