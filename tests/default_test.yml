@@ -1,0 +1,56 @@
+---
+- name: test default values deployment
+  hosts: rundeck-servers
+  sudo: yes
+
+  pre_tasks:
+    - name: Setup | Update apt-cache
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Setup | Install supporting packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      when: ansible_os_family == 'Debian'
+      sudo: yes
+      with_items:
+        - python-pip
+
+    - name: Setup | Download python pip installation
+      get_url:
+        dest: /tmp/
+        url: https://bootstrap.pypa.io/get-pip.py
+      when: ansible_os_family == 'RedHat'
+      register: setup_pip_downloaded
+
+    - name: Setup | Install pip via python
+      command: python get-pip.py
+      args:
+        chdir: /tmp/
+      when: ansible_os_family == 'RedHat' and setup_pip_downloaded|changed
+
+    - name: Setup | Install supporting packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      when: ansible_os_family == 'RedHat'
+      sudo: yes
+      with_items:
+        - libselinux-python
+
+    - name: Setup | Install supporting python packages
+      pip:
+        name: "{{ item }}"
+        state: present
+      sudo: yes
+      with_items:
+        - httplib2
+
+  roles:
+    - neel.rundeck
+
+  post_tasks:
+    - name: Verification |
+      shell: "ps aux | grep -v grep | grep rundeck -c | if [ `awk '{print $1}'` -eq 0 ]; then echo 'rundeck service is not running'; fi;"

@@ -1,2 +1,5 @@
 # Eclipse files and folders
 .project
+
+# Vagrant generated files and folders
+.vagrant

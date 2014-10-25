@@ -1,71 +1,50 @@
 ---
-- name: Rundeck | Check to see if download exists
-  stat:
-    path: /tmp/rundeck-{{ rundeck_version }}.deb
-  register: rundeck_download_check
-
-- name: download .deb file
-  get_url:
-    dest=/tmp/rundeck-{{ rundeck_version }}.deb
-    url=http://download.rundeck.org/deb/rundeck-{{ rundeck_version }}.deb
-    mode=0644
-  when: rundeck_download_check.stat.exists == false
-  tags:
-    - rundeck
-    - install
-    - packages
-
-- name: install from .deb package
-  command: dpkg --skip-same-version -i {{ temp_dir }}/rundeck-{{ rundeck_version }}.deb
-  register: dpkg_result
-  changed_when: "dpkg_result.stdout.startswith('Selecting')"
-  notify:
-    - restart rundeck
-  tags:
-    - rundeck
-    - install
-    - packages
+# install rundeck
+- include: install.yml
 
 # corrections to run with other jetty applications
 #  create groups and adjust user
-- name: create jetty group
+- name: Rundeck | Ensure jetty group exists
   group:
     name=jetty
     system=yes
+  when: ansible_os_family == 'Debian'
   tags:
     - rundeck
     - users
     - groups
 
-- name: adjust rundeck user
+- name: Rundeck | Ensure rundeck user is apart of jetty group
   user:
     name=rundeck
     groups=jetty
     createhome=yes
     home=/var/lib/rundeck
     system=yes
+  when: ansible_os_family == 'Debian'
   tags:
     - rundeck
     - users
     - groups
 
 # configuration adjustment
-- name: adjust upstart setgid configuration
+- name: Rundeck | Ensure upstart setgid is set to jetty group
   lineinfile:
     dest=/etc/init/rundeckd.conf
     regexp="^setgid "
     line="setgid jetty"
+  when: ansible_os_family == 'Debian'
   notify:
     - restart rundeck
   tags:
     - rundeck
     - configuration
 
-- name: adjust main configuration
+- name: Rundeck | Ensure server url is configured
   lineinfile:
     dest=/etc/rundeck/rundeck-config.properties
     regexp="^grails.serverURL="
-    line="grails.serverURL=http://rundeck.{{ rundeck_domain }}"
+    line="grails.serverURL=http://{{ rundeck_domain }}"
   notify:
     - restart rundeck
   tags:
@@ -76,6 +55,7 @@
 - include: postgresql.yml
   when: rundeck_database_type == 'postgresql'
 
+# extras
 - name: download rundeck plugins
   get_url:
     dest=/var/lib/rundeck/libext/{{ item.split('/')|last }}
