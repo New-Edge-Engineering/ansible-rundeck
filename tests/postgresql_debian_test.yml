@@ -24,7 +24,8 @@
         - libselinux-python
 
   roles:
-    - role: neel.postgresql
+    - ansible-java-role
+    - role: postgresql
       postgresql_databases:
         - name: rundeck
       postgresql_users:
@@ -37,9 +38,10 @@
           name: rundeck
           db: rundeck
           priv: "ALL"
-    - role: neel.rundeck
+    - role: ansible-rundeck
       rundeck_database_type: postgresql
+      rundeck_database_pass: rund3ck
 
   post_tasks:
     - name: Verification |
-      shell: "ps aux | grep -v grep | grep rundeck -c | if [ `awk '{print $1}'` -eq 0 ]; then echo 'rundeck service is not running'; fi;"
+      shell: "ps aux | grep -v grep | grep rundeck -c | if [ `awk '{print $1}'` -eq 0 ]; then echo 'rundeck service is not running'; else echo 'ok'; fi;"

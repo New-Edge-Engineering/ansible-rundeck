@@ -27,6 +27,11 @@ following configuration:
  * **Debian:** Ensure java_packages has a debian java package in it, i.e. openjdk-7-jre-headless
  * **RedHat:** Ensure java_packages has a debian java package in it, i.e. java-1.7.0-openjdk, had to adjust role to include RedHat.yml in main.yml to work.
 
+If you choose to use a database then please ensure it is installed before executing this role. The following roles have been used to create databses:
+
+ * **Ubuntu 12.04 & 14.04/PostgreSQL:** [postgresql](https://galaxy.ansible.com/list#/roles/512)
+ * **Centos 6.5 & 7.0/PostgreSQL:** [postgresql-on-el6](https://galaxy.ansible.com/list#/roles/766) (with tweeks, watch this space for updates)
+
 ## License
 
 Licensed under the MIT License. See the LICENSE file for details.
