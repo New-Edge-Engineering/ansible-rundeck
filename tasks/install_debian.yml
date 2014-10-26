@@ -1,5 +1,20 @@
 ---
 # Debian based OS
+- name: Rundeck | Install supporting packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  sudo: yes
+  with_items:
+    - python-pip
+
+- name: Rundeck | Install supporting python packages
+  pip:
+    name: "{{ item }}"
+    state: present
+  sudo: yes
+  with_items:
+    - httplib2
 
 - name: Rundeck | Find latest package name and version
   uri:
@@ -13,7 +28,6 @@
 
 - name: Rundeck | Find latest package name and version
   shell: "echo '{{ rundeck_packages_info.content }}'  | grep Filename | tail -n 1 | awk '{print $2}'"
-  when: ansible_os_family == 'Debian'
   register: rundeck_deb_package
   tags:
     - rundeck
@@ -22,7 +36,6 @@
 
 - name: Rundeck | Find installed package version
   shell: "echo '{{ rundeck_packages_info.content }}'  | grep Version | tail -n 1 | awk '{print $2}'"
-  when: ansible_os_family == 'Debian'
   register: rundeck_targeting_version
   tags:
     - rundeck
@@ -31,17 +44,18 @@
 
 - name: Rundeck | Find installed package version
   shell: "dpkg -s rundeck 2>null | grep Version | awk '{print $2}'"
-  when: ansible_os_family == 'Debian'
   register: rundeck_installed_version
   tags:
     - rundeck
     - install
     - packages
 
+- debug: var=rundeck_installed_version.stdout
+
 - name: Rundeck | Check to see if download exists
   stat:
     path: "{{ rundeck_download_path }}/{{ rundeck_deb_package.stdout }}"
-  when: ansible_os_family == 'Debian' and rundeck_installed_version.stdout|default('0')|version_compare(rundeck_targeting_version.stdout, '<')
+  when: rundeck_installed_version.stdout == '' or rundeck_installed_version.stdout|default('0')|version_compare(rundeck_targeting_version.stdout, '<')
   register: rundeck_download_check
   tags:
     - rundeck
@@ -68,30 +82,6 @@
   sudo: yes
   notify:
     - restart rundeck
-  tags:
-    - rundeck
-    - install
-    - packages
-
-
-# Redhat based OS
-- name: Rundeck | get rundeck rpm
-  yum:
-    name: http://repo.rundeck.org/latest.rpm
-    state: present
-  when: ansible_os_family == 'RedHat'
-  sudo: yes
-  tags:
-    - rundeck
-    - install
-    - packages
-
-- name: Rundeck | get rundeck rpm
-  yum:
-    name: rundeck
-    state: present
-  when: ansible_os_family == 'RedHat'
-  sudo: yes
   tags:
     - rundeck
     - install
