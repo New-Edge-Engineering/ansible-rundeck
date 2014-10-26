@@ -1,0 +1,30 @@
+# Should ideally create user passwords dynamically like the following but failing:
+#- name: Rundeck | update basic security to have users
+#  debug: msg="{{ lookup('pipe','java -cp /var/lib/rundeck/bootstrap/jetty-all-7.6.0.v20120127.jar org.eclipse.jetty.util.security.Password jsmith mypass 2>&1 | grep MD5') }} is the raw result of running this command"
+
+- name: Rundeck | update basic security to have users
+  lineinfile:
+    dest: /etc/rundeck/realm.properties
+    regexp: "^{{ item.name }}: {{ item.password }},{{ item.roles|join(',')}}"
+    line: "{{ item.name }}: {{ item.password }},{{ item.roles|join(',')}}"
+    state: present
+  when: rundeck_users|length > 0
+  with_items: rundeck_users
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - users
+
+- name: Rundeck | remove admin user
+  lineinfile:
+    backup: yes
+    dest: /etc/rundeck/realm.properties
+    regexp: "^admin:admin,user,admin,architect,deploy,build"
+    state: absent
+  when: rundeck_users|length > 0
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - users

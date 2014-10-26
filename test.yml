@@ -1,4 +1,0 @@
-- hosts: all
-  tasks:
-    - include: 'tasks/main.yml'
-    - shell: "ps aux | grep -v grep | grep rundeck -c | if [ `awk '{ print $1}'` == 0 ]; then echo 'rundeck service is not running'; fi"

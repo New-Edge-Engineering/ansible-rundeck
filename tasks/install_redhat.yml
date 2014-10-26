@@ -1,0 +1,23 @@
+---
+# Redhat based OS
+- name: Rundeck | get rundeck rpm
+  yum:
+    name: http://repo.rundeck.org/latest.rpm
+    state: present
+  sudo: yes
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Rundeck | get rundeck rpm
+  yum:
+    name: rundeck
+    state: present
+  sudo: yes
+  notify:
+    - start rundeck
+  tags:
+    - rundeck
+    - install
+    - packages

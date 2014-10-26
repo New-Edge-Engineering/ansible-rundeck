@@ -1,0 +1,27 @@
+---
+- name: test default values deployment
+  hosts: rundeck-servers
+  sudo: yes
+
+  pre_tasks:
+    - name: Setup | Update apt-cache
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Setup | Install supporting packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      when: ansible_os_family == 'RedHat'
+      sudo: yes
+      with_items:
+        - libselinux-python
+
+  roles: # checked out roles rather than installed via ansible galaxy.
+    - ansible-java-role
+    - ansible-rundeck
+
+  post_tasks:
+    - name: Verification | Rundeck should be running?
+      shell: "ps aux | grep -v grep | grep rundeck -c | if [ `awk '{print $1}'` -eq 0 ]; then echo 'rundeck service is not running'; else echo 'ok'; fi;"

@@ -1,3 +1,6 @@
 ---
+- name: start rundeck
+  service: name=rundeckd state=started
+
 - name: restart rundeck
   service: name=rundeckd state=restarted
