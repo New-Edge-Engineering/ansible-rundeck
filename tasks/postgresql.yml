@@ -1,5 +1,5 @@
 ---
-- name: make server lib directory
+- name: Rundeck - PostgreSQL | make server lib directory
   file:
     group=rundeck
     mode=0655
@@ -11,7 +11,7 @@
     - directory
     - postgresql
 
-- name: download postgreSQL jdbc driver
+- name: Rundeck - PostgreSQL | download postgreSQL jdbc driver
   get_url:
     dest=/var/lib/rundeck/lib/postgresql-9.3-1101.jdbc3.jar
     url="http://jdbc.postgresql.org/download/postgresql-9.3-1101.jdbc3.jar"
@@ -27,7 +27,7 @@
   lineinfile:
     dest=/etc/rundeck/rundeck-config.properties
     regexp="^dataSource.url"
-    line="dataSource.url=jdbc:postgresql://{{ rundeck_database_host }}:{{ rundeck_database_port }}/{{ rundeck_database_name }}"
+    line="dataSource.url=jdbc:postgresql://{{ rundeck_database_host }}:{{ rundeck_database_port|default('5432') }}/{{ rundeck_database_name }}"
   notify:
     - restart rundeck
   tags:

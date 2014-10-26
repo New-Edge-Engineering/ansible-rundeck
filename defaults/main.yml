@@ -5,7 +5,6 @@ rundeck_plugins: []          # list of plugin urls that are downloaded and insta
 rundeck_domain: localhost  # the domain that the web application is associated with.
 rundeck_database_type: 'hsqldb'
 rundeck_database_host: 'localhost'
-rundeck_database_port:
 rundeck_database_name: 'rundeck'
 rundeck_database_user: 'rundeck'
 rundeck_database_pass: 'rundeck'

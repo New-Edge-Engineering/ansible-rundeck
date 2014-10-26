@@ -1,6 +1,10 @@
 ---
 # install rundeck
-- include: install.yml
+- include: install_debian.yml
+  when: ansible_os_family == 'Debian'
+
+- include: install_redhat.yml
+  when: ansible_os_family == 'RedHat'
 
 # corrections to run with other jetty applications
 #  create groups and adjust user
@@ -26,6 +30,16 @@
     - rundeck
     - users
     - groups
+
+- name: Rundeck | Ensure tmp directory has correct permissions
+  file:
+    path: /tmp/rundeck
+    state: directory
+    owner: rundeck
+    mode: 0755
+  tags:
+    - rundeck
+    - users
 
 # configuration adjustment
 - name: Rundeck | Ensure upstart setgid is set to jetty group
