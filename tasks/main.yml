@@ -65,9 +65,15 @@
     - rundeck
     - configuration
 
-# database setup
+# vendor database setup
 - include: postgresql.yml
   when: rundeck_database_type == 'postgresql'
+
+- include: mysql.yml
+  when: rundeck_database_type == 'mysql'
+
+# user management
+- include: users.yml
 
 # extras
 - name: download rundeck plugins
