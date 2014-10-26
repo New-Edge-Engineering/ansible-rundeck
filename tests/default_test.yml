@@ -23,5 +23,5 @@
     - ansible-rundeck
 
   post_tasks:
-    - name: Verification |
-      shell: "ps aux | grep -v grep | grep rundeck -c | if [ `awk '{print $1}'` -eq 0 ]; then echo 'rundeck service is not running'; fi;"
+    - name: Verification | Rundeck should be running?
+      shell: "ps aux | grep -v grep | grep rundeck -c | if [ `awk '{print $1}'` -eq 0 ]; then echo 'rundeck service is not running'; else echo 'ok'; fi;"
