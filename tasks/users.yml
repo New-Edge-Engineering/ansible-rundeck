@@ -8,6 +8,7 @@
     regexp: "^{{ item.name }}: {{ item.password }},{{ item.roles|join(',')}}"
     line: "{{ item.name }}: {{ item.password }},{{ item.roles|join(',')}}"
     state: present
+  when: rundeck_users|length > 0
   with_items: rundeck_users
   notify:
     - restart rundeck

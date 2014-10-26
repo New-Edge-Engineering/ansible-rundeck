@@ -21,11 +21,11 @@ The following variables can be overridden:
 
 
 ## Dependencies
-The following roles need to have been completed before executing this one:
+This role does not have a hard dependency on any other role to deploy but rundeck does require java to be installed. smola.java role is a good choice with the
+following configuration:
 
- * **smola.java:**
-   * **Debian:** Ensure java_packages has a debian java package in it, i.e. openjdk-7-jre-headless
-   * **RedHat:** Ensure java_packages has a debian java package in it, i.e. java-1.7.0-openjdk, had to adjust role to include RedHat.yml in main.yml to work.
+ * **Debian:** Ensure java_packages has a debian java package in it, i.e. openjdk-7-jre-headless
+ * **RedHat:** Ensure java_packages has a debian java package in it, i.e. java-1.7.0-openjdk, had to adjust role to include RedHat.yml in main.yml to work.
 
 ## License
 

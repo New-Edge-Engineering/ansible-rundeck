@@ -1,12 +1,13 @@
 ---
 # Rundeck
 rundeck_download_path: "{{ temp_dir }}"
-rundeck_plugins: []          # list of plugin urls that are downloaded and installed into the rundeck libext.
 rundeck_domain: localhost  # the domain that the web application is associated with.
 rundeck_database_type: 'hsqldb'
 rundeck_database_host: 'localhost'
 rundeck_database_name: 'rundeck'
 rundeck_database_user: 'rundeck'
 rundeck_database_pass: 'rundeck'
+rundeck_users: []  # list of users as dictionary of name, password and list of roles
+rundeck_plugins: []  # list of plugin urls that are downloaded and installed into the rundeck libext.
 # OS, kept for backward compatibility, use rundeck_download_path instead.
 temp_dir: /tmp

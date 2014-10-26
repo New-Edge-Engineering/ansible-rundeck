@@ -18,8 +18,9 @@
       with_items:
         - libselinux-python
 
-  roles:
-    - neel.rundeck
+  roles: # checked out roles rather than installed via ansible galaxy.
+    - ansible-java-role
+    - ansible-rundeck
 
   post_tasks:
     - name: Verification |

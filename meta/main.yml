@@ -17,5 +17,4 @@ galaxy_info:
   categories:
   - system
 
-dependencies:
-  - role: smola.java
+dependencies: []
