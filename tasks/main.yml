@@ -9,7 +9,7 @@
 # corrections to run with other jetty applications
 #  create groups and adjust user
 - name: Rundeck | Ensure jetty group exists
-  group:
+  group: >
     name=jetty
     system=yes
   when: ansible_os_family == 'Debian'
@@ -19,7 +19,7 @@
     - groups
 
 - name: Rundeck | Ensure rundeck user is apart of jetty group
-  user:
+  user: >
     name=rundeck
     groups=jetty
     createhome=yes
@@ -43,7 +43,7 @@
 
 # configuration adjustment
 - name: Rundeck | Ensure upstart setgid is set to jetty group
-  lineinfile:
+  lineinfile: >
     dest=/etc/init/rundeckd.conf
     regexp="^setgid "
     line="setgid jetty"
@@ -55,7 +55,7 @@
     - configuration
 
 - name: Rundeck | Ensure server url is configured
-  lineinfile:
+  lineinfile: >
     dest=/etc/rundeck/rundeck-config.properties
     regexp="^grails.serverURL="
     line="grails.serverURL=http://{{ rundeck_domain }}"
@@ -77,7 +77,7 @@
 
 # extras
 - name: download rundeck plugins
-  get_url:
+  get_url: >
     dest=/var/lib/rundeck/libext/{{ item.split('/')|last }}
     url={{ item }}
   with_items: rundeck_plugins
