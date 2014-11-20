@@ -1,6 +1,6 @@
 ---
 - name: Rundeck - MySQL | make server lib directory
-  file:
+  file: >
     group=rundeck
     mode=0655
     owner=rundeck
@@ -12,7 +12,7 @@
     - mysql
 
 - name: Rundeck - MySQL | download jdbc driver
-  get_url:
+  get_url: >
     dest=/tmp/mysql-connector-java-3.0.17-ga.tar.gz
     url="http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-3.0.17-ga.tar.gz"
   tags:
@@ -32,7 +32,7 @@
 
 - name: Rundeck - MySQL | copy jdbc driver
   command: mv /tmp/mysql-connector-java-3.0.17-ga/mysql-connector-java-3.0.17-ga-bin.jar /var/lib/rundeck/lib/
-  args: 
+  args:
     creates: /var/lib/rundeck/lib/mysql-connector-java-3.0.17-ga-bin.jar
   tags:
     - rundeck
@@ -40,7 +40,7 @@
     - mysql
 
 - name: Rundeck - MySQL | update database connection in configuration
-  lineinfile:
+  lineinfile: >
     dest=/etc/rundeck/rundeck-config.properties
     regexp="^dataSource.url"
     line="dataSource.url=jdbc:mysql://{{ rundeck_database_host }}:{{ rundeck_database_port }}/{{ rundeck_database_name }}"
@@ -52,7 +52,7 @@
     - mysql
 
 - name: Rundeck - MySQL | update database driver in configuration
-  lineinfile:
+  lineinfile: >
     dest=/etc/rundeck/rundeck-config.properties
     regexp="^dataSource.driverClassName"
     line="dataSource.driverClassName=com.mysql.jdbc.Driver"
@@ -64,7 +64,7 @@
     - mysql
 
 - name: Rundeck - MySQL | update database dialect in configuration
-  lineinfile:
+  lineinfile: >
     dest=/etc/rundeck/rundeck-config.properties
     regexp="^dataSource.dialect"
     line="dataSource.dialect=org.hibernate.dialect.MySQLDialect"
@@ -76,7 +76,7 @@
     - mysql
 
 - name: Rundeck - MySQL | update database username in configuration
-  lineinfile:
+  lineinfile: >
     dest=/etc/rundeck/rundeck-config.properties
     regexp="^dataSource.username"
     line="dataSource.username={{ rundeck_database_user }}"
@@ -88,7 +88,7 @@
     - mysql
 
 - name: Rundeck - MySQL | update database password in configuration
-  lineinfile:
+  lineinfile: >
     dest=/etc/rundeck/rundeck-config.properties
     regexp="^dataSource.password"
     line="dataSource.password={{ rundeck_database_pass }}"
