@@ -87,3 +87,6 @@
     - rundeck
     - plugins
 
+# ssh key generation
+- include: ssh.yml
+  when: rundeck_generate_ssh == True
