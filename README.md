@@ -4,7 +4,7 @@ This is an [Ansible](http://www.ansible.com/) role to install, configure and ens
 Feedback, bug-reports, requests are welcomed and can be done via [github issues](https://github.com/New-Edge-Engineering/ansible-time/issues).
 
 ## Execution Requirements
-- Tested on Mac OS X with Ansible 1.7 .
+- Tested on Mac OS X with Ansible 1.7.
 
 ## Role Variables
 
