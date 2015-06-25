@@ -86,3 +86,34 @@
     - rundeck
     - install
     - packages
+
+- name: Rundeck | check upstart configuration exists
+  register: upstart_config
+  stat:
+    path: /etc/init/rundeckd.conf
+    get_md5: no
+    get_checksum: no
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Rundeck | remove System V init.d script if upstart config exists
+  file:
+    path: /etc/init.d/rundeckd
+    state: absent
+  when: upstart_config.stat.exists
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Rundeck | ensure service log file has correct ownership
+  file:
+    path: /var/log/rundeck/service.log
+    owner: rundeck
+    state: touch
+  tags:
+    - rundeck
+    - install
+    - packages
