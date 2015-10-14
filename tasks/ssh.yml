@@ -1,13 +1,4 @@
 ---
-# ssh key generation
-- name: Rundeck | Check default .ssh file location
-  stat:
-    path: /var/lib/rundeck/.ssh
-  register: rundeck_ssh_directory
-  tags:
-    - ssh
-    - rundeck
-
 - name: Rundeck | Ensure .ssh directory exists
   file:
     path: /var/lib/rundeck/.ssh
@@ -16,7 +7,9 @@
     group: rundeck
     mode: 0700
   sudo: yes
-  when: rundeck_ssh_directory.stat.exists == False
+  tags:
+    - ssh
+    - rundeck
 
 # ssh key
 - name: generate a ssh key
