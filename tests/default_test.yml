@@ -1,7 +1,7 @@
 ---
 - name: test default values deployment
   hosts: rundeck-servers
-  sudo: yes
+  become: yes
 
   pre_tasks:
     - name: Setup | Update apt-cache
@@ -14,13 +14,26 @@
         name: "{{ item }}"
         state: present
       when: ansible_os_family == 'RedHat'
-      sudo: yes
       with_items:
         - libselinux-python
 
   roles: # checked out roles rather than installed via ansible galaxy.
     - ansible-java-role
-    - ansible-rundeck
+    - role: ansible-rundeck
+      rundeck_users:
+        - name: sysadmin
+          password: rundeck
+          roles:
+            - user
+            - admin
+            - architect
+            - deploy
+            - build
+        - name: deploy
+          password: cloudy
+          roles:
+            - user
+            - deploy
 
   post_tasks:
     - name: Verification | Rundeck should be running?
