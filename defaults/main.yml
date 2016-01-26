@@ -12,3 +12,6 @@ rundeck_plugins: []  # list of plugin urls that are downloaded and installed int
 rundeck_generate_ssh: True  # automatically generate ssh key, set to False to stop this action.
 # OS, kept for backward compatibility, use rundeck_download_path instead.
 temp_dir: /tmp
+# Running this in vagrant or another non-priv container
+rundeck_grails_host: "{{ rundeck_domain }}"
+rundeck_grails_port: 4440

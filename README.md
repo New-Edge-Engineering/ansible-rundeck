@@ -20,7 +20,8 @@ The following variables can be overridden:
  * `rundeck_users`: A list of dictionaries of name, password ([hashed](http://rundeck.org/docs/administration/authenticating-users.html#propertyfileloginmodule)) and a list of roles (One must be an admin). If empty the default admin is not removed.
  * `rundeck_plugins`: A list of plugin urls that are downloaded and installed into the rundeck libext, default is none.
  * `rundeck_generate_ssh`: True  # automatically generate ssh key, set to False to stop this action.
-
+ * `rundeck_grails_host`: Defaults to the value in 'rundeck_domain'.
+ * `rundeck_grails_port`: Defaults to 4440
 
 ## Dependencies
 This role does not have a hard dependency on any other role to deploy but rundeck does require java to be installed. smola's [ansible-java-role](https://github.com/smola/ansible-java-role) is a good choice with the

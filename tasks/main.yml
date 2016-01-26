@@ -58,7 +58,7 @@
   lineinfile: >
     dest=/etc/rundeck/rundeck-config.properties
     regexp="^grails.serverURL="
-    line="grails.serverURL=http://{{ rundeck_domain }}"
+    line="grails.serverURL=http://{{ rundeck_grails_host }}:{{ rundeck_grails_port }}"
   notify:
     - restart rundeck
   tags:
