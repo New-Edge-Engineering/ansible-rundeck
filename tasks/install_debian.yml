@@ -75,13 +75,44 @@
     - packages
 
 - name: Rundeck | install from .deb package
-  command: "dpkg --skip-same-version -i {{ rundeck_download_path }}/{{ rundeck_deb_package.stdout }}"
+  command: "dpkg --skip-same-version --force-confold -i {{ rundeck_download_path }}/{{ rundeck_deb_package.stdout }}"
   when: (rundeck_download_check is defined and rundeck_download_check.stat.exists == true) or rundeck_downloaded|changed
   changed_when: "dpkg_result.stdout.startswith('Selecting')"
   register: dpkg_result
   sudo: yes
   notify:
     - restart rundeck
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Rundeck | check upstart configuration exists
+  register: upstart_config
+  stat:
+    path: /etc/init/rundeckd.conf
+    get_md5: no
+    get_checksum: no
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Rundeck | remove System V init.d script if upstart config exists
+  file:
+    path: /etc/init.d/rundeckd
+    state: absent
+  when: upstart_config.stat.exists
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Rundeck | ensure service log file has correct ownership
+  file:
+    path: /var/log/rundeck/service.log
+    owner: rundeck
+    state: touch
   tags:
     - rundeck
     - install

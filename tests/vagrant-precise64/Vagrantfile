@@ -29,7 +29,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ## Provision via ansible using the defaults:
   config.vm.provision "ansible" do |ansible|
     ansible.extra_vars = {
-      environment: "vagrant",
       rundeck_domain: "localhost:8067",
       java_packages: [ "openjdk-7-jre-headless" ]
     }
@@ -38,7 +37,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     }
     ansible.playbook = "../#{PLAYBOOK}"
     ansible.host_key_checking = false
-    ansible.verbose = "v"
+    ansible.verbose = "vvvv"
     # use ANSIBLE_KEEP_REMOTE_FILES=1 to debug execution
   end
 end
