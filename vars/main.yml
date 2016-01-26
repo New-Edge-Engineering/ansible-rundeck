@@ -1,0 +1,3 @@
+---
+# The following may be stable or change overtime - TBD
+rundeck_jetty_jar: /var/lib/rundeck/bootstrap/jetty-all-7.6.0.v20120127.jar
