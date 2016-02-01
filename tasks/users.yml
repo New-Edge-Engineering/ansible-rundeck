@@ -16,7 +16,7 @@
     regexp: "^{{ item.item.name }}:{{ item.stdout }},{{ item.item.roles|join(',')}}"
     line: "{{ item.item.name }}:{{ item.stdout }},{{ item.item.roles|join(',')}}"
     state: present
-  when: rundeck_encoded_users|success
+  when: rundeck_users > 0 and rundeck_encoded_users|success
   with_items: rundeck_encoded_users.results
   notify:
     - restart rundeck
