@@ -31,6 +31,17 @@
     - users
     - groups
 
+- name: Rundeck | Ensure home directory has correct permissions
+  file:
+    path: /var/lib/rundeck
+    state: directory
+    owner: rundeck
+    group: rundeck
+    mode: 0755
+  tags:
+    - rundeck
+    - users
+
 - name: Rundeck | Ensure tmp directory has correct permissions
   file:
     path: /tmp/rundeck
@@ -54,11 +65,22 @@
     - rundeck
     - configuration
 
-- name: Rundeck | Ensure server url is configured
+- name: Rundeck | Ensure server url is configured (rundeck-config.properties)
   lineinfile: >
     dest=/etc/rundeck/rundeck-config.properties
     regexp="^grails.serverURL="
-    line="grails.serverURL=http://{{ rundeck_domain }}"
+    line="grails.serverURL={{ rundeck_protocol }}://{{ rundeck_domain }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+
+- name: Rundeck | Ensure server url is configured (framework.properties)
+  lineinfile: >
+    dest=/etc/rundeck/framework.properties
+    regexp="^framework\.server\.url\s*\=s*"
+    line="framework.server.url = {{ rundeck_protocol }}://{{ rundeck_domain }}"
   notify:
     - restart rundeck
   tags:
