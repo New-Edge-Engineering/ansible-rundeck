@@ -20,11 +20,24 @@ The following variables can be overridden:
  * `rundeck_database_pass`: Defaults to rundeck but allows you to use a different password for the user access to the rundeck database.
  * `rundeck_users`: A list of dictionaries of name, password ([hashed](http://rundeck.org/docs/administration/authenticating-users.html#propertyfileloginmodule)) and a list of roles (One must be an admin). If empty the default admin is not removed.
  * `rundeck_plugins`: A list of plugin urls that are downloaded and installed into the rundeck libext, default is none.
- * `rundeck_generate_ssh`: True  # automatically generate ssh key, set to False to stop this action.
-
+ * `rundeck_generate_ssh`: Automatically generate ssh key, defgault `True` set to `False` to stop this action.
+ * `rundeck_ldap`: Determine if LDAP authentication should be used, overrides rundeck_users. Default is False. The LDAP server must a `user` group to privde access to rundeck web interface.
+ * `rundeck_ldap_url`: The location of the LDAP server, i.e. ldap://localhost:389
+ * `rundeck_ldap_bind_user`: The DN to access the LDAP server, i.e. cn=Manager,dc=example,dc=com
+ * `rundeck_ldap_bind_pass`: The DN user password o access the LDAP server, secrent
+ * `rundeck_ldap_user_dn`: The DN of the users, i.e. ou=People,dc=test1,dc=example,dc=com
+ * `rundeck_ldap_user_rdn_attr`: The attribute that identifies the username, i.e. uid
+ * `rundeck_ldap_user_id_attr`: The attribute that identifies the username, i.e. uid
+ * `rundeck_ldap_user_pass_attr`: The attribute that identifies the user password, i.e. userPassword
+ * `rundeck_ldap_user_filter`: The objectClass that is used to find user, i.e. account
+ * `rundeck_ldap_role_dn`: The DN of the roles, i.e. ou=Groups,dc=test1,dc=example,dc=com
+ * `rundeck_ldap_role_name_attr`: The attribute name of the role, i.e. cn
+ * `rundeck_ldap_role_username_attr`: This overrides the `rundeck_ldap_role_member_attr` determine user membership of roles, i.e. uid
+ * `rundeck_ldap_role_member_attr`: Used to determine user membership of roles, i.e. member
+ * `rundeck_ldap_role_filter`: The objectClass that is used to find role, i.e. groupOfNames
 
 ## Dependencies
-This role does not have a hard dependency on any other role to deploy but rundeck does require java to be installed. smola's [ansible-java-role](https://github.com/smola/ansible-java-role) is a good choice with the
+This role does not have a hard dependency on any other role to deploy but rundeck does require java to be installed (decoupled on the communities request). smola's [ansible-java-role](https://github.com/smola/ansible-java-role) is a good choice with the
 following configuration:
 
  * **Debian:** Ensure java_packages has a debian java package in it, i.e. openjdk-7-jre-headless

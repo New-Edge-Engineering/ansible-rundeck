@@ -14,8 +14,11 @@ ldap {
   userObjectClass="{{ rundeck_ldap_user_filter }}"
   roleBaseDn="{{ rundeck_ldap_role_dn }}"
   roleNameAttribute="{{ rundeck_ldap_role_name_attr }}"
+{% if rundeck_ldap_role_username_attr|length > 0 %}
   roleUsernameMemberAttribute="{{ rundeck_ldap_role_username_attr }}"
+{% else %}
   roleMemberAttribute="{{ rundeck_ldap_role_member_attr }}"
+{% endif %}
   roleObjectClass="{{ rundeck_ldap_role_filter }}"
   cacheDurationMillis="300000"
   reportStatistics="true"

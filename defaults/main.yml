@@ -22,7 +22,7 @@ rundeck_ldap_user_pass_attr: userPassword
 rundeck_ldap_user_filter: account
 rundeck_ldap_role_dn: ou=Groups,dc=test1,dc=example,dc=com
 rundeck_ldap_role_name_attr: cn
-rundeck_ldap_role_username_attr: uid
+rundeck_ldap_role_username_attr:
 rundeck_ldap_role_member_attr: member
 rundeck_ldap_role_filter: groupOfNames
 # OS, kept for backward compatibility, use rundeck_download_path instead.
