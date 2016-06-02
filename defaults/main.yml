@@ -1,7 +1,7 @@
 ---
 # Rundeck
 rundeck_download_path: "{{ temp_dir }}"
-rundeck_domain: "http"  # the protocol that the web application is accessed by.
+rundeck_protocol: "http"  # the protocol that the web application is accessed by.
 rundeck_domain: "localhost:4440"  # the domain that the web application is associated with.
 rundeck_database_type: 'hsqldb'
 rundeck_database_host: 'localhost'
@@ -11,5 +11,19 @@ rundeck_database_pass: 'rundeck'
 rundeck_users: []  # list of users as dictionary of name, password and list of roles
 rundeck_plugins: []  # list of plugin urls that are downloaded and installed into the rundeck libext.
 rundeck_generate_ssh: True  # automatically generate ssh key, set to False to stop this action.
+rundeck_ldap: False
+rundeck_ldap_url: ldap://localhost:389
+rundeck_ldap_bind_user: cn=Manager,dc=example,dc=com
+rundeck_ldap_bind_pass: secrent
+rundeck_ldap_user_dn: ou=People,dc=test1,dc=example,dc=com
+rundeck_ldap_user_rdn_attr: uid
+rundeck_ldap_user_id_attr: uid
+rundeck_ldap_user_pass_attr: userPassword
+rundeck_ldap_user_filter: account
+rundeck_ldap_role_dn: ou=Groups,dc=test1,dc=example,dc=com
+rundeck_ldap_role_name_attr: cn
+rundeck_ldap_role_username_attr: uid
+rundeck_ldap_role_member_attr: member
+rundeck_ldap_role_filter: groupOfNames
 # OS, kept for backward compatibility, use rundeck_download_path instead.
 temp_dir: /tmp

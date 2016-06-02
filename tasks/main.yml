@@ -97,6 +97,10 @@
 # user management
 - include: users.yml
 
+# optional LDAP integration
+- include: ldap.yml
+  when: "rundeck_ldap"
+
 # extras
 - name: download rundeck plugins
   get_url: >
