@@ -13,8 +13,8 @@
 
 - name: Rundeck - PostgreSQL | download postgreSQL jdbc driver
   get_url: >
-    dest=/var/lib/rundeck/lib/postgresql-9.3-1101.jdbc3.jar
-    url="http://jdbc.postgresql.org/download/postgresql-9.3-1101.jdbc3.jar"
+    dest="/var/lib/rundeck/lib/{{ rundeck_postgresql_driver_file }}"
+    url="{{ rundeck_postgresql_driver_download }}"
     group=rundeck
     mode=0655
     owner=rundeck
