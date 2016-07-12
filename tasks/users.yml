@@ -4,7 +4,7 @@
   become: True
   register: rundeck_encoded_users
   when: rundeck_users|length > 0
-  with_items: rundeck_users
+  with_items: "{{ rundeck_users }}"
 
 - name: Rundeck | users passswords
   debug: var=rundeck_encoded_users
@@ -17,7 +17,7 @@
     line: "{{ item.item.name }}:{{ item.stdout }},{{ item.item.roles|join(',')}}"
     state: present
   when: rundeck_users|length > 0 and rundeck_encoded_users|success
-  with_items: rundeck_encoded_users.results
+  with_items: "{{ rundeck_encoded_users.results }}"
   notify:
     - restart rundeck
   tags:
