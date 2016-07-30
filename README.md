@@ -37,6 +37,7 @@ The following variables can be overridden:
  * `rundeck_ldap_role_member_attr`: Used to determine user membership of roles, i.e. member
  * `rundeck_ldap_role_filter`: The objectClass that is used to find role, i.e. groupOfNames
  * `rundeck_ldap_netsted_groups`: Default: false. If true, will resolve all nested groups for authenticated users
+ * `rundeck_ldap_debug`: Default: false. Enable/Disable ldap debuging
 
 ## Dependencies
 This role does not have a hard dependency on any other role to deploy but rundeck does require java to be installed (decoupled on the communities request). smola's [ansible-java-role](https://github.com/smola/ansible-java-role) is a good choice with the

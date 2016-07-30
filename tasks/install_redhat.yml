@@ -4,7 +4,7 @@
   yum:
     name: http://repo.rundeck.org/latest.rpm
     state: present
-  sudo: yes
+  become: yes
   tags:
     - rundeck
     - install
@@ -14,7 +14,7 @@
   yum:
     name: rundeck
     state: present
-  sudo: yes
+  become: yes
   notify:
     - start rundeck
   tags:

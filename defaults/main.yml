@@ -27,5 +27,6 @@ rundeck_ldap_role_username_attr:
 rundeck_ldap_role_member_attr: member
 rundeck_ldap_role_filter: groupOfNames
 rundeck_ldap_netsted_groups: False
+rundeck_ldap_debug: False
 # OS, kept for backward compatibility, use rundeck_download_path instead.
 temp_dir: /tmp
