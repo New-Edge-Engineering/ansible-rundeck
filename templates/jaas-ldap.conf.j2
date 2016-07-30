@@ -1,6 +1,6 @@
 ldap {
   com.dtolabs.rundeck.jetty.jaas.JettyCachingLdapLoginModule required
-  debug="true"
+  debug="{{ rundeck_ldap_debug }}"
   contextFactory="com.sun.jndi.ldap.LdapCtxFactory"
   providerUrl="{{ rundeck_ldap_url }}"
   bindDn="{{ rundeck_ldap_bind_user }}"

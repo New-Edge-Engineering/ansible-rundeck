@@ -4,7 +4,7 @@
   apt:
     name: "{{ item }}"
     state: present
-  sudo: yes
+  become: yes
   with_items:
     - python-pip
 
@@ -12,7 +12,7 @@
   pip:
     name: "{{ item }}"
     state: present
-  sudo: yes
+  become: yes
   with_items:
     - httplib2
 
@@ -79,7 +79,7 @@
   when: (rundeck_download_check is defined and rundeck_download_check.stat.exists == true) or rundeck_downloaded|changed
   changed_when: "dpkg_result.stdout.startswith('Selecting')"
   register: dpkg_result
-  sudo: yes
+  become: yes
   notify:
     - restart rundeck
   tags:
