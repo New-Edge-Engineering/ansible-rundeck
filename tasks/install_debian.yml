@@ -16,70 +16,38 @@
   with_items:
     - httplib2
 
-- name: Rundeck | Find latest package name and version
-  uri:
-    url: http://dl.bintray.com/rundeck/rundeck-deb/Packages
-    return_content: yes
-  register: rundeck_packages_info
+- name: Rundeck | Add Bintray GPG key for rundeck repo
+  apt_key:
+    id: 379CE192D401AB61
+    url: https://bintray.com/user/downloadSubjectPublicKey?username=bintray
   tags:
     - rundeck
     - install
     - packages
 
-- name: Rundeck | Find latest package name and version
-  shell: "echo '{{ rundeck_packages_info.content }}'  | grep Filename | tail -n 1 | awk '{print $2}'"
-  register: rundeck_deb_package
+- name: Rundeck | Add Rundeck Build GPG key
+  apt_key:
+    id: 85E9DBC74FCB329EDEDADD2E90770E1BE2D1065B
+    url: http://rundeck.org/keys/BUILD-GPG-KEY-Rundeck.org.key
   tags:
     - rundeck
     - install
     - packages
 
-- name: Rundeck | Find installed package version
-  shell: "echo '{{ rundeck_packages_info.content }}'  | grep Version | tail -n 1 | awk '{print $2}'"
-  register: rundeck_targeting_version
+- name: Rundeck | Add Rundeck APT repository on Bintray
+  apt_repository:
+    repo: 'deb http://dl.bintray.com/rundeck/rundeck-deb /'
+    filename: rundeck
   tags:
     - rundeck
     - install
     - packages
 
-- name: Rundeck | Find installed package version
-  shell: "dpkg -s rundeck 2>null | grep Version | awk '{print $2}'"
-  register: rundeck_installed_version
-  tags:
-    - rundeck
-    - install
-    - packages
-
-- debug: var=rundeck_installed_version.stdout
-
-- name: Rundeck | Check to see if download exists
-  stat:
-    path: "{{ rundeck_download_path }}/{{ rundeck_deb_package.stdout }}"
-  when: rundeck_installed_version.stdout == '' or rundeck_installed_version.stdout|default('0')|version_compare(rundeck_targeting_version.stdout, '<')
-  register: rundeck_download_check
-  tags:
-    - rundeck
-    - install
-    - packages
-
-- name: Rundeck | download .deb file
-  get_url:
-    dest: "{{ rundeck_download_path }}/{{ rundeck_deb_package.stdout }}"
-    url: "http://download.rundeck.org/deb/{{ rundeck_deb_package.stdout }}"
-    mode: 0644
-  register: rundeck_downloaded
-  when: rundeck_download_check is defined and rundeck_download_check.stat.exists == false
-  tags:
-    - rundeck
-    - install
-    - packages
-
-- name: Rundeck | install from .deb package
-  command: "dpkg --skip-same-version --force-confold -i {{ rundeck_download_path }}/{{ rundeck_deb_package.stdout }}"
-  when: (rundeck_download_check is defined and rundeck_download_check.stat.exists == true) or rundeck_downloaded|changed
-  changed_when: "dpkg_result.stdout.startswith('Selecting')"
-  register: dpkg_result
-  become: yes
+- name: Rundeck | install from APT repository
+  apt:
+    name: rundeck
+    state: present
+    allow_unauthenticated: yes #FIXME: https://github.com/rundeck/rundeck/issues/93
   notify:
     - restart rundeck
   tags:
