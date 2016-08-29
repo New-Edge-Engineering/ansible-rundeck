@@ -105,11 +105,34 @@
     - install
     - packages
 
-- name: Rundeck | ensure service log file has correct ownership
+- name: Rundeck | ensure service log directory has correct ownership
   file:
-    path: /var/log/rundeck/service.log
+    path: /var/log/rundeck
     owner: rundeck
-    state: touch
+    state: directory
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Rundeck | See if there are more log files
+  find:
+    paths: /var/log/rundeck
+    file_type: file
+    patterns: "*.log"
+  register: rundeck_logfiles
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Rundeck | ensure service log files have correct ownership
+  file:
+    path: "{{ item.path }}"
+    owner: rundeck
+    state: file
+  with_items:
+    "{{ rundeck_logfiles.files }}"
   tags:
     - rundeck
     - install
