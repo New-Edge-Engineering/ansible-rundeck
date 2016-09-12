@@ -6,31 +6,13 @@
   when: rundeck_users|length > 0
   with_items: "{{ rundeck_users }}"
 
-- name: Rundeck | users passswords
-  debug: var=rundeck_encoded_users
-  when: rundeck_users|length > 0
-
 - name: Rundeck | update basic security to have users
-  lineinfile:
+  template:
+    src: realm.properties.j2
     dest: /etc/rundeck/realm.properties
-    regexp: "^{{ item.item.name }}:{{ item.stdout }},{{ item.item.roles|join(',')}}"
-    line: "{{ item.item.name }}:{{ item.stdout }},{{ item.item.roles|join(',')}}"
-    state: present
+    owner: rundeck
+    group: rundeck 
   when: rundeck_users|length > 0 and rundeck_encoded_users|success
-  with_items: "{{ rundeck_encoded_users.results }}"
-  notify:
-    - restart rundeck
-  tags:
-    - rundeck
-    - users
-
-- name: Rundeck | remove admin user
-  lineinfile:
-    backup: yes
-    dest: /etc/rundeck/realm.properties
-    regexp: "^admin:admin,user,admin,architect,deploy,build"
-    state: absent
-  when: rundeck_users|length > 0
   notify:
     - restart rundeck
   tags:
