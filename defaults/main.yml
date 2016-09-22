@@ -28,5 +28,12 @@ rundeck_ldap_role_member_attr: member
 rundeck_ldap_role_filter: groupOfNames
 rundeck_ldap_netsted_groups: False
 rundeck_ldap_debug: False
+rundeck_crowd: False
+rundeck_crowd_name: 'RunDeck'
+rundeck_crowd_pass: 'secret'
+rundeck_crowd_url: 'http://localhost/crowd/'
+rundeck_crowd_maxconn: 20
+rundeck_crowd_timeout: 5000
+rundeck_crowd_debug: False
 # OS, kept for backward compatibility, use rundeck_download_path instead.
 temp_dir: /tmp
