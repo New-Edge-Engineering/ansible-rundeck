@@ -10,6 +10,7 @@ rundeck_database_user: 'rundeck'
 rundeck_database_pass: 'rundeck'
 rundeck_users: []  # list of users as dictionary of name, password and list of roles
 rundeck_plugins: []  # list of plugin urls that are downloaded and installed into the rundeck libext.
+rundeck_extra_bootstrap: []  # list of jar urls that are downloaded and installed into the rundeck bootstrap.
 rundeck_generate_ssh: True  # automatically generate ssh key, set to False to stop this action.
 rundeck_ldap: False
 rundeck_ldap_url: ldap://localhost:389

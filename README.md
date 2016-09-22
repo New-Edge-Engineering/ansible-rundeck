@@ -20,6 +20,7 @@ The following variables can be overridden:
  * `rundeck_database_pass`: Defaults to rundeck but allows you to use a different password for the user access to the rundeck database.
  * `rundeck_users`: A list of dictionaries of name, password ([hashed](http://rundeck.org/docs/administration/authenticating-users.html#propertyfileloginmodule)) and a list of roles (One must be an admin). If empty the default admin is not removed.
  * `rundeck_plugins`: A list of plugin urls that are downloaded and installed into the rundeck libext, default is none.
+ * `rundeck_extra_bootstrap`: A list of extra jar urls that are downloaded and installed into the rundeck bootstrap, default is none.
  * `rundeck_generate_ssh`: Automatically generate ssh key, defgault `True` set to `False` to stop this action.
  * `rundeck_ldap`: Determine if LDAP authentication should be used, overrides rundeck_users. Default is False. The LDAP server must a `user` group to privde access to rundeck web interface.
  * `rundeck_ldap_url`: The location of the LDAP server, i.e. ldap://localhost:389
