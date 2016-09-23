@@ -1,4 +1,16 @@
 ---
+- name: download JAAS LoginModule for Crowd into bootstrap dir
+  get_url:
+    dest: "{{ rundeck_home_dir }}/bootstrap/{{ item.split('/')|last }}"
+    url: "{{ item }}"
+  with_items: "{{ rundeck_crowd_jaas_jars }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+    - crowd
+
 - name: ensure Crowd login module configuration exists
   template:
     dest: "{{ rundeck_conf_dir }}/jaas-crowd.conf"

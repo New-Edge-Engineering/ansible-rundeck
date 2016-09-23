@@ -117,17 +117,6 @@
     - rundeck
     - plugins
 
-- name: download rundeck extra bootstrap jars
-  get_url: >
-    dest=/var/lib/rundeck/bootstrap/{{ item.split('/')|last }}
-    url={{ item }}
-  with_items: "{{ rundeck_extra_bootstrap }}"
-  notify:
-    - restart rundeck
-  tags:
-    - rundeck
-    - extra_bootstrap
-
 # ssh key generation
 - include: ssh.yml
   when: rundeck_generate_ssh == True

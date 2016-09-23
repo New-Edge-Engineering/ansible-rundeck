@@ -10,7 +10,6 @@ rundeck_database_user: 'rundeck'
 rundeck_database_pass: 'rundeck'
 rundeck_users: []  # list of users as dictionary of name, password and list of roles
 rundeck_plugins: []  # list of plugin urls that are downloaded and installed into the rundeck libext.
-rundeck_extra_bootstrap: []  # list of jar urls that are downloaded and installed into the rundeck bootstrap.
 rundeck_generate_ssh: True  # automatically generate ssh key, set to False to stop this action.
 rundeck_ldap: False
 rundeck_ldap_url: ldap://localhost:389
@@ -36,5 +35,15 @@ rundeck_crowd_url: 'http://localhost/crowd/'
 rundeck_crowd_maxconn: 20
 rundeck_crowd_timeout: 5000
 rundeck_crowd_debug: False
+rundeck_crowd_jaas_jars:
+  - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/commons-codec-1.2.jar
+  - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/commons-httpclient-3.1.jar
+  - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/commons-logging-1.0.4.jar
+  - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/jaas-jetty-crowd-1.0-SNAPSHOT.jar
+  - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/jersey-apache-client-1.18.1.jar
+  - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/jersey-client-1.18.1.jar
+  - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/jersey-core-1.18.1.jar
+  - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/slf4j-api-1.7.7.jar
+  - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/slf4j-simple-1.7.7.jar
 # OS, kept for backward compatibility, use rundeck_download_path instead.
 temp_dir: /tmp

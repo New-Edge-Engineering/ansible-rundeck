@@ -39,7 +39,8 @@ The following variables can be overridden:
  * `rundeck_ldap_role_filter`: The objectClass that is used to find role, i.e. groupOfNames
  * `rundeck_ldap_netsted_groups`: Default: false. If true, will resolve all nested groups for authenticated users
  * `rundeck_ldap_debug`: Default: false. Enable/Disable ldap debuging
- * `rundeck_crowd`: Default: False. Determine if Atlassian Crowd authentication should be used, overrides rundeck_users.
+ * `rundeck_crowd`: Default: False. Determine if Atlassian Crowd authentication should be used, overrides rundeck_users
+ * `rundeck_crowd_jaas_jars`: List of URL to get [Crowd JAAS](https://github.com/flopma/crowd-jaas) jars from
  * `rundeck_crowd_name`: Default: 'RunDeck'. Application name to access Crowd
  * `rundeck_crowd_pass`: Default: 'secret'. Application password to access Crowd
  * `rundeck_crowd_url`: Default: 'http://localhost/crowd/'.
@@ -62,33 +63,6 @@ If you choose to use a database then please ensure it is installed before execut
 
  * **Ubuntu 12.04 & 14.04/PostgreSQL:** [postgresql](https://galaxy.ansible.com/list#/roles/512)
  * **Centos 6.5 & 7.0/PostgreSQL:** [postgresql-on-el6](https://galaxy.ansible.com/list#/roles/766) (with tweeks, watch this space for updates)
-
-## Crowd auth notes
-
-To get Crowd auth working you will need to install [JAAS LoginModule for Crowd](https://github.com/flopma/crowd-jaas) in bootstrap directory.
-
-Here is a working example:
-
-```yaml
-    - role: neel.rundeck
-      rundeck_plugins:
-        - https://repo1.maven.org/maven2/be/fluid-it/tools/rundeck/plugins/rundeck-httppost-plugin/0.1-1/rundeck-httppost-plugin-0.1-1.jar
-        - https://github.com/Batix/rundeck-ansible-plugin/releases/download/1.2.4/ansible-plugin-1.2.4.jar
-      rundeck_extra_bootstrap:
-        - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/commons-codec-1.2.jar
-        - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/commons-httpclient-3.1.jar
-        - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/commons-logging-1.0.4.jar
-        - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/jaas-jetty-crowd-1.0-SNAPSHOT.jar
-        - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/jersey-apache-client-1.18.1.jar
-        - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/jersey-client-1.18.1.jar
-        - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/jersey-core-1.18.1.jar
-        - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/slf4j-api-1.7.7.jar
-        - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/slf4j-simple-1.7.7.jar
-      rundeck_crowd: True
-      rundeck_crowd_name: 'RunDeck'
-      rundeck_crowd_pass: 'SecretPassword'
-      rundeck_crowd_url: 'http://localhost/crowd/'
-```
 
 ## License
 
