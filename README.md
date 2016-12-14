@@ -28,6 +28,7 @@ The following variables can be overridden:
  * `rundeck_ldap_user_dn`: The DN of the users, i.e. ou=People,dc=test1,dc=example,dc=com
  * `rundeck_ldap_user_rdn_attr`: The attribute that identifies the username, i.e. uid
  * `rundeck_ldap_user_id_attr`: The attribute that identifies the username, i.e. uid
+ * `rundeck_ldap_bindinglogin`: Default: false. If true, bind as the user that is authenticating, otherwise bind as the manager and perform a search to verify user password
  * `rundeck_ldap_user_pass_attr`: The attribute that identifies the user password, i.e. userPassword
  * `rundeck_ldap_user_filter`: The objectClass that is used to find user, i.e. account
  * `rundeck_ldap_role_dn`: The DN of the roles, i.e. ou=Groups,dc=test1,dc=example,dc=com
@@ -35,6 +36,8 @@ The following variables can be overridden:
  * `rundeck_ldap_role_username_attr`: This overrides the `rundeck_ldap_role_member_attr` determine user membership of roles, i.e. uid
  * `rundeck_ldap_role_member_attr`: Used to determine user membership of roles, i.e. member
  * `rundeck_ldap_role_filter`: The objectClass that is used to find role, i.e. groupOfNames
+ * `rundeck_ldap_netsted_groups`: Default: false. If true, will resolve all nested groups for authenticated users
+ * `rundeck_ldap_debug`: Default: false. Enable/Disable ldap debuging
 
 ## Dependencies
 This role does not have a hard dependency on any other role to deploy but rundeck does require java to be installed (decoupled on the communities request). smola's [ansible-java-role](https://github.com/smola/ansible-java-role) is a good choice with the

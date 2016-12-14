@@ -1,16 +1,18 @@
 ldap {
   com.dtolabs.rundeck.jetty.jaas.JettyCachingLdapLoginModule required
-  debug="true"
+  debug="{{ rundeck_ldap_debug }}"
   contextFactory="com.sun.jndi.ldap.LdapCtxFactory"
   providerUrl="{{ rundeck_ldap_url }}"
   bindDn="{{ rundeck_ldap_bind_user }}"
   bindPassword="{{ rundeck_ldap_bind_pass }}"
   authenticationMethod="simple"
-  forceBindingLogin="false"
+  forceBindingLogin="{{ rundeck_ldap_bindinglogin }}"
   userBaseDn="{{ rundeck_ldap_user_dn }}"
   userRdnAttribute="{{ rundeck_ldap_user_rdn_attr }}"
   userIdAttribute="{{ rundeck_ldap_user_id_attr }}"
+{% if not rundeck_ldap_bindinglogin %}
   userPasswordAttribute="{{ rundeck_ldap_user_pass_attr }}"
+{% endif %}
   userObjectClass="{{ rundeck_ldap_user_filter }}"
   roleBaseDn="{{ rundeck_ldap_role_dn }}"
   roleNameAttribute="{{ rundeck_ldap_role_name_attr }}"
@@ -27,5 +29,5 @@ ldap {
   reportStatistics="true"
   timeoutRead="10000"
   timeoutConnect="20000"
-  nestedGroups="false";
+  nestedGroups="{{ rundeck_ldap_netsted_groups }}";
 };
