@@ -12,12 +12,13 @@
     - postgresql
 
 - name: Rundeck - PostgreSQL | download postgreSQL jdbc driver
-  get_url: >
-    dest="/var/lib/rundeck/lib/{{ rundeck_postgresql_driver_file }}"
-    url="{{ rundeck_postgresql_driver_download }}"
-    group=rundeck
-    mode=0655
-    owner=rundeck
+  get_url:
+    dest: "/var/lib/rundeck/lib/{{ rundeck_postgresql_driver_file }}"
+    url: "{{ rundeck_postgresql_driver_download }}"
+    group: rundeck
+    mode: 0655
+    owner: rundeck
+    validate_certs: no  # work around to certificate on ubuntu 14.04.
   tags:
     - rundeck
     - jdbc
