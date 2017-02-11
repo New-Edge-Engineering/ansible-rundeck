@@ -2,16 +2,10 @@
 - name: Bootstrap python
   hosts: rundeck-servers
   become: yes
-  gather_facts: no
-
   tasks:
-    - name: Setup | Are we on Debian?
-      raw: 'lsb_release -si'
-      register: lsb_release
-
     - name: Setup | Bootstrap on Debian
       raw: 'apt-get update && apt-get --no-install-recommends -yq install python python-apt'
-      when: lsb_release.stdout == "Ubuntu\r\n" or lsb_release.stdout == "Debian\r\n"
+      when: ansible_os_family == "Ubuntu" or ansible_os_family == "Debian"
 
 - name: test default values deployment
   hosts: rundeck-servers

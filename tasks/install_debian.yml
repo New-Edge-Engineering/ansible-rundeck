@@ -1,14 +1,15 @@
 ---
 # Debian based OS
-- name: Rundeck | Install supporting packages
+- name: Debian | Install supporting packages
   apt:
     name: "{{ item }}"
     state: present
   become: yes
   with_items:
     - python-pip
+    - python-setuptools
 
-- name: Rundeck | Install supporting python packages
+- name: Debian | Install supporting python packages
   pip:
     name: "{{ item }}"
     state: present
@@ -16,7 +17,7 @@
   with_items:
     - httplib2
 
-- name: Rundeck | Add Bintray GPG key for rundeck repo
+- name: Debian | Add Bintray GPG key for rundeck repo
   apt_key:
     id: 379CE192D401AB61
     url: https://bintray.com/user/downloadSubjectPublicKey?username=bintray
@@ -25,7 +26,7 @@
     - install
     - packages
 
-- name: Rundeck | Add Rundeck Build GPG key
+- name: Debian | Add Debian Build GPG key
   apt_key:
     id: 85E9DBC74FCB329EDEDADD2E90770E1BE2D1065B
     url: http://rundeck.org/keys/BUILD-GPG-KEY-Rundeck.org.key
@@ -34,20 +35,18 @@
     - install
     - packages
 
-- name: Rundeck | Add Rundeck APT repository on Bintray
+- name: Debian | Add Debian APT repository on Bintray
   apt_repository:
     repo: 'deb http://dl.bintray.com/rundeck/rundeck-deb /'
-    filename: rundeck
   tags:
     - rundeck
     - install
     - packages
 
-- name: Rundeck | install from APT repository
+- name: Debian | install from APT repository
   apt:
     name: rundeck
     state: present
-    allow_unauthenticated: yes #FIXME: https://github.com/rundeck/rundeck/issues/93
   notify:
     - systemd daemon-reload
     - restart rundeck
@@ -56,7 +55,7 @@
     - install
     - packages
 
-- name: Rundeck | check upstart configuration exists
+- name: Debian | check upstart configuration exists
   register: upstart_config
   stat:
     path: /etc/init/rundeckd.conf
@@ -67,7 +66,7 @@
     - install
     - packages
 
-- name: Rundeck | remove System V init.d script if upstart config exists
+- name: Debian | remove System V init.d script if upstart config exists
   file:
     path: /etc/init.d/rundeckd
     state: absent
@@ -77,7 +76,7 @@
     - install
     - packages
 
-- name: Rundeck | add systemd service helper
+- name: Debian | add systemd service helper
   copy:
     src: systemd/rundeck-start
     dest: /usr/bin/rundeck-start
@@ -90,7 +89,7 @@
     - install
     - packages
 
-- name: Rundeck | add systemd service unit
+- name: Debian | add systemd service unit
   copy:
     src: systemd/rundeckd.service
     dest: /etc/systemd/system/rundeckd.service
@@ -105,7 +104,7 @@
     - install
     - packages
 
-- name: Rundeck | ensure service log directory has correct ownership
+- name: Debian | ensure service log directory has correct ownership
   file:
     path: /var/log/rundeck
     owner: rundeck
@@ -115,7 +114,7 @@
     - install
     - packages
 
-- name: Rundeck | See if there are more log files
+- name: Debian | See if there are more log files
   find:
     paths: /var/log/rundeck
     file_type: file
@@ -126,13 +125,13 @@
     - install
     - packages
 
-- name: Rundeck | ensure service log files have correct ownership
+- name: Debian | ensure service log files have correct ownership
   file:
     path: "{{ item.path }}"
     owner: rundeck
     state: file
   with_items:
-    "{{ rundeck_logfiles.files }}"
+    "{{ rundeck_logfiles.files|default([]) }}"
   tags:
     - rundeck
     - install
