@@ -99,7 +99,11 @@
 
 # optional LDAP integration
 - include: ldap.yml
-  when: "rundeck_ldap"
+  when: rundeck_ldap == True
+
+# optional Atlassian Crowd integration
+- include: crowd.yml
+  when: rundeck_crowd == True
 
 # extras
 - name: download rundeck plugins

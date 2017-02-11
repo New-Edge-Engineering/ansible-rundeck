@@ -20,6 +20,7 @@ The following variables can be overridden:
  * `rundeck_database_pass`: Defaults to rundeck but allows you to use a different password for the user access to the rundeck database.
  * `rundeck_users`: A list of dictionaries of name, password ([hashed](http://rundeck.org/docs/administration/authenticating-users.html#propertyfileloginmodule)) and a list of roles (One must be an admin). If empty the default admin is not removed.
  * `rundeck_plugins`: A list of plugin urls that are downloaded and installed into the rundeck libext, default is none.
+ * `rundeck_extra_bootstrap`: A list of extra jar urls that are downloaded and installed into the rundeck bootstrap, default is none.
  * `rundeck_generate_ssh`: Automatically generate ssh key, defgault `True` set to `False` to stop this action.
  * `rundeck_ldap`: Determine if LDAP authentication should be used, overrides rundeck_users. Default is False. The LDAP server must a `user` group to privde access to rundeck web interface.
  * `rundeck_ldap_url`: The location of the LDAP server, i.e. ldap://localhost:389
@@ -38,6 +39,18 @@ The following variables can be overridden:
  * `rundeck_ldap_role_filter`: The objectClass that is used to find role, i.e. groupOfNames
  * `rundeck_ldap_netsted_groups`: Default: false. If true, will resolve all nested groups for authenticated users
  * `rundeck_ldap_debug`: Default: false. Enable/Disable ldap debuging
+ * `rundeck_crowd`: Default: False. Determine if Atlassian Crowd authentication should be used, overrides rundeck_users
+ * `rundeck_crowd_jaas_jars`: List of URL to get [Crowd JAAS](https://github.com/flopma/crowd-jaas) jars from
+ * `rundeck_crowd_name`: Default: 'RunDeck'. Application name to access Crowd
+ * `rundeck_crowd_pass`: Default: 'secret'. Application password to access Crowd
+ * `rundeck_crowd_url`: Default: 'http://localhost/crowd/'.
+ * `rundeck_crowd_maxconn`: Default: 20. httpMaxConnections
+ * `rundeck_crowd_timeout`: Default: 5000. httpTimeout
+ * `rundeck_crowd_proxy_host`: Default: Undefined
+ * `rundeck_crowd_proxy_port`: Default: Undefined
+ * `rundeck_crowd_proxy_username`: Default: Undefined
+ * `rundeck_crowd_proxy_password`: Default: Undefined
+ * `rundeck_crowd_debug`: Default: False. Enable/Disable Crowd auth debugging
 
 ## Dependencies
 This role does not have a hard dependency on any other role to deploy but rundeck does require java to be installed (decoupled on the communities request). smola's [ansible-java-role](https://github.com/smola/ansible-java-role) is a good choice with the
