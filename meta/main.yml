@@ -15,7 +15,11 @@ galaxy_info:
     versions:
     - 6
     - 7
-  categories:
-  - system
+  galaxy_tags:
+    - automation
+    - continuous_delivery
+    - rundeck
+    - self_service
+    - workflow
 
 dependencies: []
