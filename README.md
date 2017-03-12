@@ -4,7 +4,7 @@ This is an [Ansible](http://www.ansible.com/) role to install, configure and ens
 Feedback, bug-reports, requests are welcomed and can be done via [github issues](https://github.com/New-Edge-Engineering/ansible-rundeck/issues).
 
 ## Execution Requirements
-- Tested on Mac OS X with Ansible 1.7.
+- Tested on Mac OS X with Ansible 2.0.
 
 ## Role Variables
 
@@ -63,6 +63,17 @@ If you choose to use a database then please ensure it is installed before execut
 
  * **Ubuntu 12.04 & 14.04/PostgreSQL:** [postgresql](https://galaxy.ansible.com/list#/roles/512)
  * **Centos 6.5 & 7.0/PostgreSQL:** [postgresql-on-el6](https://galaxy.ansible.com/list#/roles/766) (with tweeks, watch this space for updates)
+
+## Testing
+Please check changes using the vagrant boxes provided, i.e.:
+````
+cd tests/vagrant-centos65
+vagrant up
+````
+To use PostgreSQL database, export the playbook first, i.e.:
+````
+export PLAYBOOK=postgresql_redhat_test.yml
+````
 
 ## License
 
