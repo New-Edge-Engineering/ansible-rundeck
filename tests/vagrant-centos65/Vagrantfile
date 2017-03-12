@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-IP_ADDRESS = "33.33.33.65"
+IP_ADDRESS = "172.16.0.16"
 HTTP_PORT  = 8065
 HTTPS_PORT = 8465
 
@@ -29,8 +29,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ## Provision via ansible using the defaults:
   config.vm.provision "ansible" do |ansible|
     ansible.extra_vars = {
-      environment: "vagrant",
-      rundeck_domain: "localhost:8065",
+      rundeck_domain: "localhost:#{HTTP_PORT}",
       java_packages: [ "java-1.7.0-openjdk" ]
     }
     ansible.groups = {
@@ -38,7 +37,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     }
     ansible.playbook = "../#{PLAYBOOK}"
     ansible.host_key_checking = false
-    ansible.verbose = "v"
+    ansible.verbose = "vv"
     # use ANSIBLE_KEEP_REMOTE_FILES=1 to debug execution
   end
 end

@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-IP_ADDRESS = "33.33.33.68"
+IP_ADDRESS = "172.16.0.19"
 HTTP_PORT  = 8068
 HTTPS_PORT = 8468
 
@@ -29,8 +29,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ## Provision via ansible using the defaults:
   config.vm.provision "ansible" do |ansible|
     ansible.extra_vars = {
-      environment: "vagrant",
-      rundeck_domain: "localhost:8068",
+      rundeck_domain: "localhost:#{HTTP_PORT}",
       java_packages: [ "openjdk-7-jre-headless" ]
     }
     ansible.groups = {

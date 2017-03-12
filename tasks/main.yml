@@ -6,32 +6,36 @@
 - include: install_redhat.yml
   when: ansible_os_family == 'RedHat'
 
+- name: discover version number
+  shell: dpkg -s rundeck | grep -i version
+  register: rundeck_targeting_version
+
 # corrections to run with other jetty applications
 #  create groups and adjust user
-- name: Rundeck | Ensure jetty group exists
-  group: >
-    name=jetty
-    system=yes
+- name: Install | Ensure jetty group exists
+  group:
+    name: jetty
+    system: yes
   when: ansible_os_family == 'Debian'
   tags:
     - rundeck
     - users
     - groups
 
-- name: Rundeck | Ensure rundeck user is apart of jetty group
-  user: >
-    name=rundeck
-    groups=jetty
-    createhome=yes
-    home=/var/lib/rundeck
-    system=yes
+- name: Install | Ensure rundeck user is apart of jetty group
+  user:
+    name: rundeck
+    groups: jetty
+    createhome: yes
+    home: /var/lib/rundeck
+    system: yes
   when: ansible_os_family == 'Debian'
   tags:
     - rundeck
     - users
     - groups
 
-- name: Rundeck | Ensure home directory has correct permissions
+- name: Install | Ensure home directory has correct permissions
   file:
     path: /var/lib/rundeck
     state: directory
@@ -42,7 +46,7 @@
     - rundeck
     - users
 
-- name: Rundeck | Ensure tmp directory has correct permissions
+- name: Install | Ensure tmp directory has correct permissions
   file:
     path: /tmp/rundeck
     state: directory
@@ -53,11 +57,11 @@
     - users
 
 # configuration adjustment
-- name: Rundeck | Ensure upstart setgid is set to jetty group
-  lineinfile: >
-    dest=/etc/init/rundeckd.conf
-    regexp="^setgid "
-    line="setgid jetty"
+- name: Install | Ensure upstart setgid is set to jetty group
+  lineinfile:
+    dest: /etc/init/rundeckd.conf
+    regexp: "^setgid "
+    line: "setgid jetty"
   when: ansible_os_family == 'Debian'
   notify:
     - restart rundeck
@@ -65,22 +69,22 @@
     - rundeck
     - configuration
 
-- name: Rundeck | Ensure server url is configured (rundeck-config.properties)
-  lineinfile: >
-    dest=/etc/rundeck/rundeck-config.properties
-    regexp="^grails.serverURL="
-    line="grails.serverURL={{ rundeck_protocol }}://{{ rundeck_domain }}"
+- name: Install | Ensure server url is configured (rundeck-config.properties)
+  lineinfile:
+    dest: /etc/rundeck/rundeck-config.properties
+    regexp: "^grails.serverURL="
+    line: "grails.serverURL={{ rundeck_protocol }}://{{ rundeck_domain }}"
   notify:
     - restart rundeck
   tags:
     - rundeck
     - configuration
 
-- name: Rundeck | Ensure server url is configured (framework.properties)
-  lineinfile: >
-    dest=/etc/rundeck/framework.properties
-    regexp="^framework\.server\.url\s*\=s*"
-    line="framework.server.url = {{ rundeck_protocol }}://{{ rundeck_domain }}"
+- name: Install | Ensure server url is configured (framework.properties)
+  lineinfile:
+    dest: /etc/rundeck/framework.properties
+    regexp: "^framework\\.server\\.url\\s*\\=s*"
+    line: "framework.server.url = {{ rundeck_protocol }}://{{ rundeck_domain }}"
   notify:
     - restart rundeck
   tags:
@@ -99,13 +103,17 @@
 
 # optional LDAP integration
 - include: ldap.yml
-  when: "rundeck_ldap"
+  when: rundeck_ldap == True
+
+# optional Atlassian Crowd integration
+- include: crowd.yml
+  when: rundeck_crowd == True
 
 # extras
 - name: download rundeck plugins
-  get_url: >
-    dest=/var/lib/rundeck/libext/{{ item.split('/')|last }}
-    url={{ item }}
+  get_url:
+    dest: /var/lib/rundeck/libext/{{ item.split('/')|last }}
+    url: "{{ item }}"
   with_items: "{{ rundeck_plugins }}"
   notify:
     - restart rundeck

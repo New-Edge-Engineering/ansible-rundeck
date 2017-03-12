@@ -1,14 +1,15 @@
 ---
 # Debian based OS
-- name: Rundeck | Install supporting packages
+- name: Debian | Install supporting packages
   apt:
     name: "{{ item }}"
     state: present
   become: yes
   with_items:
     - python-pip
+    - python-setuptools
 
-- name: Rundeck | Install supporting python packages
+- name: Debian | Install supporting python packages
   pip:
     name: "{{ item }}"
     state: present
@@ -16,78 +17,45 @@
   with_items:
     - httplib2
 
-- name: Rundeck | Find latest package name and version
-  uri:
-    url: http://dl.bintray.com/rundeck/rundeck-deb/Packages
-    return_content: yes
-  register: rundeck_packages_info
+- name: Debian | Add Bintray GPG key for rundeck repo
+  apt_key:
+    id: 379CE192D401AB61
+    url: https://bintray.com/user/downloadSubjectPublicKey?username=bintray
   tags:
     - rundeck
     - install
     - packages
 
-- name: Rundeck | Find latest package name and version
-  shell: "echo '{{ rundeck_packages_info.content }}'  | grep Filename | tail -n 1 | awk '{print $2}'"
-  register: rundeck_deb_package
+- name: Debian | Add Debian Build GPG key
+  apt_key:
+    id: 85E9DBC74FCB329EDEDADD2E90770E1BE2D1065B
+    url: http://rundeck.org/keys/BUILD-GPG-KEY-Rundeck.org.key
   tags:
     - rundeck
     - install
     - packages
 
-- name: Rundeck | Find installed package version
-  shell: "echo '{{ rundeck_packages_info.content }}'  | grep Version | tail -n 1 | awk '{print $2}'"
-  register: rundeck_targeting_version
+- name: Debian | Add Debian APT repository on Bintray
+  apt_repository:
+    repo: 'deb http://dl.bintray.com/rundeck/rundeck-deb /'
   tags:
     - rundeck
     - install
     - packages
 
-- name: Rundeck | Find installed package version
-  shell: "dpkg -s rundeck 2>null | grep Version | awk '{print $2}'"
-  register: rundeck_installed_version
-  tags:
-    - rundeck
-    - install
-    - packages
-
-- debug: var=rundeck_installed_version.stdout
-
-- name: Rundeck | Check to see if download exists
-  stat:
-    path: "{{ rundeck_download_path }}/{{ rundeck_deb_package.stdout }}"
-  when: rundeck_installed_version.stdout == '' or rundeck_installed_version.stdout|default('0')|version_compare(rundeck_targeting_version.stdout, '<')
-  register: rundeck_download_check
-  tags:
-    - rundeck
-    - install
-    - packages
-
-- name: Rundeck | download .deb file
-  get_url:
-    dest: "{{ rundeck_download_path }}/{{ rundeck_deb_package.stdout }}"
-    url: "http://download.rundeck.org/deb/{{ rundeck_deb_package.stdout }}"
-    mode: 0644
-  register: rundeck_downloaded
-  when: rundeck_download_check is defined and rundeck_download_check.stat.exists == false
-  tags:
-    - rundeck
-    - install
-    - packages
-
-- name: Rundeck | install from .deb package
-  command: "dpkg --skip-same-version --force-confold -i {{ rundeck_download_path }}/{{ rundeck_deb_package.stdout }}"
-  when: (rundeck_download_check is defined and rundeck_download_check.stat.exists == true) or rundeck_downloaded|changed
-  changed_when: "dpkg_result.stdout.startswith('Selecting')"
-  register: dpkg_result
-  become: yes
+- name: Debian | install from APT repository
+  apt:
+    name: rundeck
+    state: present
   notify:
+    - systemd daemon-reload
     - restart rundeck
   tags:
     - rundeck
     - install
     - packages
 
-- name: Rundeck | check upstart configuration exists
+- name: Debian | check upstart configuration exists
   register: upstart_config
   stat:
     path: /etc/init/rundeckd.conf
@@ -98,7 +66,7 @@
     - install
     - packages
 
-- name: Rundeck | remove System V init.d script if upstart config exists
+- name: Debian | remove System V init.d script if upstart config exists
   file:
     path: /etc/init.d/rundeckd
     state: absent
@@ -108,11 +76,62 @@
     - install
     - packages
 
-- name: Rundeck | ensure service log file has correct ownership
+- name: Debian | add systemd service helper
+  copy:
+    src: systemd/rundeck-start
+    dest: /usr/bin/rundeck-start
+    owner: root
+    group: root
+    mode: 0755
+  when: ansible_service_mgr == 'systemd'
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Debian | add systemd service unit
+  copy:
+    src: systemd/rundeckd.service
+    dest: /etc/systemd/system/rundeckd.service
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_service_mgr == 'systemd'
+  notify:
+    - systemd daemon-reload
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Debian | ensure service log directory has correct ownership
   file:
-    path: /var/log/rundeck/service.log
+    path: /var/log/rundeck
     owner: rundeck
-    state: touch
+    state: directory
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Debian | See if there are more log files
+  find:
+    paths: /var/log/rundeck
+    file_type: file
+    patterns: "*.log"
+  register: rundeck_logfiles
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Debian | ensure service log files have correct ownership
+  file:
+    path: "{{ item.path }}"
+    owner: rundeck
+    state: file
+  with_items:
+    "{{ rundeck_logfiles.files|default([]) }}"
   tags:
     - rundeck
     - install

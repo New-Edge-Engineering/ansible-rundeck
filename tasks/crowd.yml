@@ -1,0 +1,44 @@
+---
+- name: download JAAS LoginModule for Crowd into bootstrap dir
+  get_url:
+    dest: "{{ rundeck_home_dir }}/bootstrap/{{ item.split('/')|last }}"
+    url: "{{ item }}"
+  with_items: "{{ rundeck_crowd_jaas_jars }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+    - crowd
+
+- name: ensure Crowd login module configuration exists
+  template:
+    dest: "{{ rundeck_conf_dir }}/jaas-crowd.conf"
+    src: jaas-crowd.conf.j2
+    owner: "{{ rundeck_user }}"
+    group: "{{ rundeck_group }}"
+    mode: 0600
+
+- name: ensure profile is updated to use CROWD configuration
+  lineinfile:
+    dest: "{{ rundeck_conf_dir }}/profile"
+    regexp: '^export RDECK_JVM(.*)$'
+    line: "export RDECK_JVM=\"-Djava.security.auth.login.config={{ rundeck_conf_dir }}/jaas-crowd.conf \\"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+    - crowd
+
+- name: ensure profile is updated to use CROWD module
+  lineinfile:
+    dest: "{{ rundeck_conf_dir }}/profile"
+    regexp: '^(\s*)-Dloginmodule.name=(.*)$'
+    line: '        -Dloginmodule.name=crowd \'
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+    - crowd
