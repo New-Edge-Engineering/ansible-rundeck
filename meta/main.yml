@@ -17,9 +17,9 @@ galaxy_info:
     - 7
   galaxy_tags:
     - automation
-    - continuous_delivery
+    - continuousdelivery
     - rundeck
-    - self_service
+    - selfservice
     - workflow
 
 dependencies: []
