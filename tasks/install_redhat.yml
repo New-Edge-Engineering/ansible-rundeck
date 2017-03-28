@@ -21,3 +21,7 @@
     - rundeck
     - install
     - packages
+
+- name: discover version number
+  shell: yum info rundeck | grep -i version | grep -o '[0-9.]\+'
+  register: rundeck_targeting_version
