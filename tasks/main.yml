@@ -7,7 +7,7 @@
   when: ansible_os_family == 'RedHat'
 
 - name: discover version number
-  shell: dpkg -s rundeck | grep -i version
+  shell: "{{ rundeck_package_command }} rundeck | grep -i version | grep -o '[0-9.]\\+'"
   register: rundeck_targeting_version
 
 # corrections to run with other jetty applications

@@ -136,3 +136,7 @@
     - rundeck
     - install
     - packages
+
+- name: set rundeck_package_command for debian
+  set_fact:
+    rundeck_package_command: dpkg -s
