@@ -6,6 +6,10 @@
 - include: install_redhat.yml
   when: ansible_os_family == 'RedHat'
 
+- name: discover version number
+  shell: "{{ rundeck_package_command }} rundeck | grep -i version | grep -o '[0-9.]\\+'"
+  register: rundeck_targeting_version
+
 # corrections to run with other jetty applications
 #  create groups and adjust user
 - name: Install | Ensure jetty group exists

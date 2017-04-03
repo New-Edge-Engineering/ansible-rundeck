@@ -137,6 +137,6 @@
     - install
     - packages
 
-- name: discover version number
-  shell: dpkg -s rundeck | grep -i version | grep -o '[0-9.]\+'
-  register: rundeck_targeting_version
+- name: set rundeck_package_command for debian
+  set_fact:
+    rundeck_package_command: dpkg -s
