@@ -6,6 +6,67 @@
 - include: install_redhat.yml
   when: ansible_os_family == 'RedHat'
 
+- name: Install | add systemd service helper
+  copy:
+    src: systemd/rundeck-start
+    dest: /usr/bin/rundeck-start
+    owner: root
+    group: root
+    mode: 0755
+  when: ansible_service_mgr == 'systemd'
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Install | add systemd service unit
+  copy:
+    src: systemd/rundeckd.service
+    dest: /etc/systemd/system/rundeckd.service
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_service_mgr == 'systemd'
+  notify:
+    - systemd daemon-reload
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Install | ensure service log directory has correct ownership
+  file:
+    path: /var/log/rundeck
+    owner: rundeck
+    state: directory
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Install | See if there are more log files
+  find:
+    paths: /var/log/rundeck
+    file_type: file
+    patterns: "*.log"
+  register: rundeck_logfiles
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Install | ensure service log files have correct ownership
+  file:
+    path: "{{ item.path }}"
+    owner: rundeck
+    state: file
+  with_items:
+    "{{ rundeck_logfiles.files|default([]) }}"
+  tags:
+    - rundeck
+    - install
+    - packages
+
 - name: discover version number
   shell: "{{ rundeck_package_command }} rundeck | grep -i version | grep -o '[0-9.]\\+'"
   register: rundeck_targeting_version
