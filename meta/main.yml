@@ -1,19 +1,16 @@
 ---
 galaxy_info:
-  author: Matthew Green
-  company: New Edge Engineering
-  description: installation and configuration of rundeck
-  min_ansible_version: 2.0
+  author: Tomasz Grzesik
+  description: Rundeck installation
+  company: Sointeractive
   license: MIT
+  min_ansible_version: 2.0
   platforms:
   - name: Ubuntu
     versions:
-    - precise
-    - trusty
     - xenial
   - name: EL
     versions:
-    - 6
     - 7
   galaxy_tags:
     - automation
@@ -22,4 +19,5 @@ galaxy_info:
     - selfservice
     - workflow
 
-dependencies: []
+dependencies:
+  - SoInteractive.java

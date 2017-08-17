@@ -1,13 +1,9 @@
 ---
-converged: true
-created: true
+converged: null
+created: null
 default_platform: null
 default_provider: null
-driver: docker
+driver: null
 driver_config: {}
-hosts:
-  rundeck-centos:
-    groups: []
-  rundeck-xenial:
-    groups: []
+hosts: {}
 multiple_platforms: null
