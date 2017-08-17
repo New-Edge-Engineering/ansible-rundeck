@@ -1,9 +1,12 @@
-# Eclipse files and folders
-.project
-
-# Vagrant generated files and folders
-.vagrant
-*.log
-
-# Ansible files
 *.retry
+tests/test.sh
+.idea
+.travis.yml
+*.swp
+*.swo
+*.idea
+.molecule
+.cache
+**__pycache__**
+*.iml
+roles
