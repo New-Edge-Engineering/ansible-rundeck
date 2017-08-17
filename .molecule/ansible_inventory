@@ -1,0 +1,3 @@
+[all]
+rundeck-xenial ansible_connection=docker
+rundeck-centos ansible_connection=docker

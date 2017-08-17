@@ -1,0 +1,17 @@
+---
+ansible:
+  playbook: tests/playbook.yml
+driver:
+  name: docker
+verifier:
+  name: testinfra
+docker:
+  containers:
+    - name: rundeck-xenial
+      image: solita/ubuntu-systemd
+      image_version: 16.04
+      privileged: true
+    - name: rundeck-centos
+      image: centos/systemd
+      image_version: latest
+      privileged: true

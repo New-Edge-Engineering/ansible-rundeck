@@ -70,6 +70,7 @@
 - name: discover version number
   shell: "{{ rundeck_package_command }} rundeck | grep -i version | grep -o '[0-9.]\\+'"
   register: rundeck_targeting_version
+  changed_when: false
 
 # corrections to run with other jetty applications
 #  create groups and adjust user
