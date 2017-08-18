@@ -23,6 +23,3 @@
   when: rundeck_users|length > 0 and rundeck_encoded_users|success
   notify:
     - restart rundeck
-  tags:
-    - rundeck
-    - users

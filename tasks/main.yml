@@ -13,10 +13,6 @@
     group: root
     mode: 0755
   when: ansible_service_mgr == 'systemd'
-  tags:
-    - rundeck
-    - install
-    - packages
 
 - name: Install | add systemd service unit
   copy:
@@ -28,20 +24,12 @@
   when: ansible_service_mgr == 'systemd'
   notify:
     - systemd daemon-reload
-  tags:
-    - rundeck
-    - install
-    - packages
 
 - name: Install | ensure service log directory has correct ownership
   file:
     path: /var/log/rundeck
     owner: rundeck
     state: directory
-  tags:
-    - rundeck
-    - install
-    - packages
 
 - name: Install | See if there are more log files
   find:
@@ -49,10 +37,6 @@
     file_type: file
     patterns: "*.log"
   register: rundeck_logfiles
-  tags:
-    - rundeck
-    - install
-    - packages
 
 - name: Install | ensure service log files have correct ownership
   file:
@@ -61,10 +45,6 @@
     state: file
   with_items:
     "{{ rundeck_logfiles.files|default([]) }}"
-  tags:
-    - rundeck
-    - install
-    - packages
 
 - name: discover version number
   shell: "{{ rundeck_package_command }} rundeck | grep -i version | grep -o '[0-9.]\\+'"
@@ -78,10 +58,6 @@
     name: jetty
     system: yes
   when: ansible_os_family == 'Debian'
-  tags:
-    - rundeck
-    - users
-    - groups
 
 - name: Install | Ensure rundeck user is apart of jetty group
   user:
@@ -91,10 +67,6 @@
     home: /var/lib/rundeck
     system: yes
   when: ansible_os_family == 'Debian'
-  tags:
-    - rundeck
-    - users
-    - groups
 
 - name: Install | Ensure home directory has correct permissions
   file:
@@ -103,9 +75,6 @@
     owner: rundeck
     group: rundeck
     mode: 0755
-  tags:
-    - rundeck
-    - users
 
 - name: Install | Ensure tmp directory has correct permissions
   file:
@@ -113,9 +82,6 @@
     state: directory
     owner: rundeck
     mode: 0755
-  tags:
-    - rundeck
-    - users
 
 # configuration adjustment
 - name: Install | Ensure upstart setgid is set to jetty group
@@ -126,9 +92,6 @@
   when: ansible_os_family == 'Debian'
   notify:
     - restart rundeck
-  tags:
-    - rundeck
-    - configuration
 
 - name: Install | Ensure server url is configured (rundeck-config.properties)
   lineinfile:
@@ -137,9 +100,6 @@
     line: "grails.serverURL={{ rundeck_protocol }}://{{ rundeck_domain }}"
   notify:
     - restart rundeck
-  tags:
-    - rundeck
-    - configuration
 
 - name: Install | Ensure server url is configured (framework.properties)
   lineinfile:
@@ -148,9 +108,6 @@
     line: "framework.server.url = {{ rundeck_protocol }}://{{ rundeck_domain }}"
   notify:
     - restart rundeck
-  tags:
-    - rundeck
-    - configuration
 
 # vendor database setup
 - include: postgresql.yml
@@ -174,9 +131,6 @@
   with_items: "{{ rundeck_plugins }}"
   notify:
     - restart rundeck
-  tags:
-    - rundeck
-    - plugins
 
 # ssh key generation
 - include: ssh.yml

@@ -36,8 +36,7 @@
         - libselinux-python
 
   roles: # checked out roles rather than installed via ansible galaxy.
-    - ansible-java-role
-    - role: ansible-rundeck
+    - role: rundeck
       rundeck_users:
         - name: sysadmin
           password: rundeck

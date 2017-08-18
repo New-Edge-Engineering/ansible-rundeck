@@ -21,27 +21,15 @@
   apt_key:
     id: 379CE192D401AB61
     url: https://bintray.com/user/downloadSubjectPublicKey?username=bintray
-  tags:
-    - rundeck
-    - install
-    - packages
 
 - name: Debian | Add Debian Build GPG key
   apt_key:
     id: 85E9DBC74FCB329EDEDADD2E90770E1BE2D1065B
     url: http://rundeck.org/keys/BUILD-GPG-KEY-Rundeck.org.key
-  tags:
-    - rundeck
-    - install
-    - packages
 
 - name: Debian | Add Debian APT repository on Bintray
   apt_repository:
     repo: 'deb http://dl.bintray.com/rundeck/rundeck-deb /'
-  tags:
-    - rundeck
-    - install
-    - packages
 
 - name: Debian | install from APT repository
   apt:
@@ -50,10 +38,6 @@
   notify:
     - systemd daemon-reload
     - restart rundeck
-  tags:
-    - rundeck
-    - install
-    - packages
 
 - name: Debian | check upstart configuration exists
   register: upstart_config
@@ -61,20 +45,12 @@
     path: /etc/init/rundeckd.conf
     get_md5: no
     get_checksum: no
-  tags:
-    - rundeck
-    - install
-    - packages
 
 - name: Debian | remove System V init.d script if upstart config exists
   file:
     path: /etc/init.d/rundeckd
     state: absent
   when: upstart_config.stat.exists
-  tags:
-    - rundeck
-    - install
-    - packages
 
 - name: set rundeck_package_command for debian
   set_fact:

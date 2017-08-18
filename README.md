@@ -1,4 +1,4 @@
-<p><img src="https://cdn.xebialabs.com/assets/files/plugins/rundeck.jpg" alt="rundeck logo" title="rundeck" align="right" height="60" /></p>
+<p><img src="https://cdn.xebialabs.com/assets/files/plugins/rundeck.jpg" alt="rundeck logo" title="rundeck" align="right" height="100" /></p>
 
 Ansible Role: rundeck
 ===================
