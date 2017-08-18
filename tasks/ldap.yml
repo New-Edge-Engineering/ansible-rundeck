@@ -14,10 +14,6 @@
     line: "export RDECK_JVM=\"-Djava.security.auth.login.config={{ rundeck_conf_dir }}/jaas-ldap.conf \\"
   notify:
     - restart rundeck
-  tags:
-    - rundeck
-    - configuration
-    - ldap
 
 - name: ensure profile is updated to use LDAP module
   lineinfile:
@@ -26,7 +22,3 @@
     line: '        -Dloginmodule.name=ldap \'
   notify:
     - restart rundeck
-  tags:
-    - rundeck
-    - configuration
-    - ldap
