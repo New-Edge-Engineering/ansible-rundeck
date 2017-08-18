@@ -8,7 +8,6 @@
     mode: 0700
   become: yes
 
-# ssh key
 - name: generate a ssh key
   user:
     name: rundeck

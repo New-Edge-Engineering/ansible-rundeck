@@ -1,4 +1,4 @@
-# Should ideally create user passwords dynamically like the following but failing:
+---
 - name: Users | determine jetty jar
   find:
     paths: "/var/lib/rundeck/bootstrap/"
@@ -12,7 +12,7 @@
   register: rundeck_encoded_users
   when: rundeck_users|length > 0 and rundeck_jetty_jar['matched'] > 0
   with_items: "{{ rundeck_users }}"
-  no_log: true
+#  no_log: true
 
 - name: Users | update basic security to have users
   template:
