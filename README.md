@@ -18,7 +18,7 @@ The following variables can be overridden:
  * `rundeck_database_name`: Defaults to rundeck but allows you to use a different rundeck database name.
  * `rundeck_database_user`: Defaults to rundeck but allows you to use a different username to accesses the rundeck database.
  * `rundeck_database_pass`: Defaults to rundeck but allows you to use a different password for the user access to the rundeck database.
- * `rundeck_users`: A list of dictionaries of name, password ([hashed](http://rundeck.org/docs/administration/authenticating-users.html#propertyfileloginmodule)) and a list of roles (One must be an admin). If empty the default admin is not removed.
+ * `rundeck_users`: A list of dictionaries of name, password, and a list of roles (One must be an admin). If empty the default admin is not removed. The password will be [hashed](http://rundeck.org/docs/administration/authenticating-users.html#propertyfileloginmodule). A pre-hashed password may be supplied using a key of `password_hash` rather than `password`.
  * `rundeck_plugins`: A list of plugin urls that are downloaded and installed into the rundeck libext, default is none.
  * `rundeck_extra_bootstrap`: A list of extra jar urls that are downloaded and installed into the rundeck bootstrap, default is none.
  * `rundeck_generate_ssh`: Automatically generate ssh key, defgault `True` set to `False` to stop this action.
