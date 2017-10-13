@@ -24,6 +24,9 @@
 #
 #@jetty.user.deploy.name@:@jetty.user.deploy.password@,user,deploy
 #@jetty.user.build.name@:@jetty.user.build.password@,user,build
-{% for user in rundeck_encoded_users.results %}
+{% for user in rundeck_users|selectattr('password_hash', 'defined') %}
+{{ user.name }}:{{ user.password_hash }},user,{{ user.roles|join(',') }}
+{% endfor %}
+{% for user in rundeck_encoded_users.results|rejectattr('skipped', 'defined') %}
 {{ user.item.name }}:{{ user.stdout }},user,{{ user.item.roles|join(',') }}
 {% endfor %}

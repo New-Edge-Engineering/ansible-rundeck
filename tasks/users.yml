@@ -4,14 +4,15 @@
     paths: "/var/lib/rundeck/bootstrap/"
     patterns: "^jetty-all-.*.jar$"
     use_regex: True
+  when: rundeck_users|selectattr('password_hash', 'undefined')|list|length > 0
   register: rundeck_jetty_jar
 
 - name: Users | encode users password
   shell: "java -cp {{ rundeck_jetty_jar.files[0].path }} org.eclipse.jetty.util.security.Password {{ item.name }} {{ item.password }} 2>&1 | grep MD5"
   become: True
   register: rundeck_encoded_users
-  when: rundeck_users|length > 0 and rundeck_jetty_jar['matched'] > 0
-  with_items: "{{ rundeck_users }}"
+  when: rundeck_users|selectattr('password_hash', 'undefined')|list|length > 0 and rundeck_jetty_jar['matched'] > 0
+  with_items: "{{ rundeck_users|selectattr('password_hash', 'undefined')|list }}"
   no_log: true
 
 - name: Users | update basic security to have users
