@@ -1,0 +1,37 @@
+# corrections to run with other jetty applications
+#  create groups and adjust user
+- name: Rundeck | Ensure jetty group exists
+  group: >
+    name=jetty
+    system=yes
+  when: ansible_os_family == 'Debian'
+  tags:
+    - rundeck
+    - users
+    - groups
+
+- name: Rundeck | Ensure rundeck user is apart of jetty group
+  user: >
+    name=rundeck
+    groups=jetty
+    createhome=yes
+    home=/var/lib/rundeck
+    system=yes
+  when: ansible_os_family == 'Debian'
+  tags:
+    - rundeck
+    - users
+    - groups
+
+# configuration adjustment
+- name: Rundeck | Ensure upstart setgid is set to jetty group
+  lineinfile: >
+    dest=/etc/init/rundeckd.conf
+    regexp="^setgid "
+    line="setgid jetty"
+  when: ansible_os_family == 'Debian'
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration

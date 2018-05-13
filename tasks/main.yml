@@ -1,118 +1,34 @@
 ---
 # install rundeck
-- include: install_debian.yml
+- include_tasks: install_for_debian.yml
   when: ansible_os_family == 'Debian'
 
-- include: install_redhat.yml
+- include_tasks: install_for_redhat.yml
   when: ansible_os_family == 'RedHat'
 
-# corrections to run with other jetty applications
-#  create groups and adjust user
-- name: Rundeck | Ensure jetty group exists
-  group: >
-    name=jetty
-    system=yes
+# install rundeck
+- include_tasks: configure_for_debian.yml
   when: ansible_os_family == 'Debian'
-  tags:
-    - rundeck
-    - users
-    - groups
 
-- name: Rundeck | Ensure rundeck user is apart of jetty group
-  user: >
-    name=rundeck
-    groups=jetty
-    createhome=yes
-    home=/var/lib/rundeck
-    system=yes
-  when: ansible_os_family == 'Debian'
-  tags:
-    - rundeck
-    - users
-    - groups
-
-- name: Rundeck | Ensure home directory has correct permissions
-  file:
-    path: /var/lib/rundeck
-    state: directory
-    owner: rundeck
-    group: rundeck
-    mode: 0755
-  tags:
-    - rundeck
-    - users
-
-- name: Rundeck | Ensure tmp directory has correct permissions
-  file:
-    path: /tmp/rundeck
-    state: directory
-    owner: rundeck
-    mode: 0755
-  tags:
-    - rundeck
-    - users
-
-# configuration adjustment
-- name: Rundeck | Ensure upstart setgid is set to jetty group
-  lineinfile: >
-    dest=/etc/init/rundeckd.conf
-    regexp="^setgid "
-    line="setgid jetty"
-  when: ansible_os_family == 'Debian'
-  notify:
-    - restart rundeck
-  tags:
-    - rundeck
-    - configuration
-
-- name: Rundeck | Ensure server url is configured (rundeck-config.properties)
-  lineinfile: >
-    dest=/etc/rundeck/rundeck-config.properties
-    regexp="^grails.serverURL="
-    line="grails.serverURL={{ rundeck_protocol }}://{{ rundeck_domain }}"
-  notify:
-    - restart rundeck
-  tags:
-    - rundeck
-    - configuration
-
-- name: Rundeck | Ensure server url is configured (framework.properties)
-  lineinfile: >
-    dest=/etc/rundeck/framework.properties
-    regexp="^framework\.server\.url\s*\=s*"
-    line="framework.server.url = {{ rundeck_protocol }}://{{ rundeck_domain }}"
-  notify:
-    - restart rundeck
-  tags:
-    - rundeck
-    - configuration
+- include_tasks: configure.yml
 
 # vendor database setup
-- include: postgresql.yml
+- include_tasks: configure_for_postgresql.yml
   when: rundeck_database_type == 'postgresql'
 
-- include: mysql.yml
+- include_tasks: configure_for_mysql.yml
   when: rundeck_database_type == 'mysql'
 
 # user management
-- include: users.yml
-
-# optional LDAP integration
-- include: ldap.yml
-  when: "rundeck_ldap"
-
-# extras
-- name: download rundeck plugins
-  get_url: >
-    dest=/var/lib/rundeck/libext/{{ item.split('/')|last }}
-    url={{ item }}
-  with_items: "{{ rundeck_plugins }}"
-  notify:
-    - restart rundeck
-  tags:
-    - rundeck
-    - plugins
+- include_tasks: configure_users.yml
 
 # ssh key generation
-- include: ssh.yml
+- include_tasks: configure_ssh.yml
   when: rundeck_generate_ssh == True
+
+# optional LDAP integration
+- include_tasks: configure_for_ldap.yml
+  when: rundeck_ldap == True
+
+# extras
+- include_tasks: plugins.yml

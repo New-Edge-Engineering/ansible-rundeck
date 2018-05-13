@@ -84,12 +84,11 @@
     - configuration
     - postgresql
 
-- name: Rundeck - PostgreSQL | ensure database is used to store projects
+- name: Rundeck - PostgreSQL | ensure database is used to store projects # +2.5.0
   lineinfile: >
     dest=/etc/rundeck/rundeck-config.properties
     line="rundeck.projectsStorageType=db"
     state="present"
-  when: rundeck_targeting_version.stdout|version_compare('2.5.0', '>=')
   notify:
     - restart rundeck
   tags:
