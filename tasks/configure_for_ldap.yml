@@ -8,10 +8,10 @@
     mode: 0640
 
 - name: configure for ldap | ensure profile is updated to use LDAP configuration
-  lineinfile:
-    dest: "{{ rundeck_conf_dir }}/profile"
-    regexp: '^export RDECK_JVM(.*)$'
-    line: "export RDECK_JVM=\"-Djava.security.auth.login.config={{ rundeck_conf_dir }}/jaas-ldap.conf \\"
+  replace:
+    path: "{{ rundeck_conf_dir }}/profile"
+    regexp: '^(.*)-Djava.security.auth.login.config=(.*).conf \\$'
+    replace: '\1-Djava.security.auth.login.config={{ rundeck_conf_dir }}/jaas-ldap.conf \\'
   when: ansible_os_family == 'Debian'
   notify:
     - restart rundeck
@@ -30,11 +30,14 @@
     - configuration
     - ldap
 
-- name: configure for ldap | ensure jaas conf exists in /etc/sysconfig/rundeckd
+- name: configure for ldap | ensure overrides exists in /etc/sysconfig/rundeckd
   lineinfile:
     path: /etc/sysconfig/rundeckd
-    line: "JAAS_CONF={{ rundeck_conf_dir }}/jaas-ldap.conf"
+    line: "{{ item }}"
   when: ansible_os_family == 'RedHat'
+  with_items:
+    - "JAAS_CONF={{ rundeck_conf_dir }}/jaas-ldap.conf"
+    - "LOGIN_MODULE=ldap"
   notify:
     - restart rundeck
   tags:
@@ -43,10 +46,10 @@
     - ldap
 
 - name: configure for ldap | ensure profile is updated to use LDAP module
-  lineinfile:
+  replace:
     dest: "{{ rundeck_conf_dir }}/profile"
     regexp: '^(\s*)-Dloginmodule.name=(.*)$'
-    line: '        -Dloginmodule.name=ldap \'
+    replace: '\1-Dloginmodule.name=ldap \\'
   notify:
     - restart rundeck
   tags:
