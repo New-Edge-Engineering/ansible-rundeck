@@ -1,5 +1,5 @@
 ---
-- name: Rundeck | Ensure home directory has correct permissions
+- name: Configure | Ensure home directory has correct permissions
   file:
     path: /var/lib/rundeck
     state: directory
@@ -10,7 +10,7 @@
     - rundeck
     - users
 
-- name: Rundeck | Ensure tmp directory has correct permissions
+- name: Configure | Ensure tmp directory has correct permissions
   file:
     path: /tmp/rundeck
     state: directory
@@ -20,7 +20,31 @@
     - rundeck
     - users
 
-- name: Rundeck | Ensure server url is configured (rundeck-config.properties)
+- name: Configure | Ensure tokens file exists
+  template:
+    dest: "{{ rundeck_conf_dir }}/tokens.properties"
+    src: tokens.properties.j2
+    owner: "{{ rundeck_user }}"
+    group: "{{ rundeck_group }}"
+    mode: 0640
+  when: rundeck_static_user_tokens|length > 0
+  tags:
+    - rundeck
+    - configuration
+
+- name: Configure | Ensure rundeck tokens file configuration exists
+  lineinfile:
+    dest: /etc/rundeck/framework.properties
+    regexp: "^rundeck.tokens.file=.*"
+    line: rundeck.tokens.file=/etc/rundeck/tokens.properties
+  when: rundeck_static_user_tokens|length > 0
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+
+- name: Configure | Ensure server url is configured (rundeck-config.properties)
   lineinfile: >
     dest=/etc/rundeck/rundeck-config.properties
     regexp="^grails.serverURL="
@@ -31,7 +55,7 @@
     - rundeck
     - configuration
 
-- name: Rundeck | Ensure server url is configured (framework.properties)
+- name: Configure | Ensure server url is configured (framework.properties)
   lineinfile: >
     dest=/etc/rundeck/framework.properties
     regexp="^framework\.server\.url\s*\=s*"
