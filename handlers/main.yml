@@ -5,7 +5,11 @@
   when: ansible_service_mgr == 'systemd'
 
 - name: start rundeck
-  service: name=rundeckd state=started
+  service: 
+    name: rundeckd
+    state: started
 
 - name: restart rundeck
-  service: name=rundeckd state=restarted
+  service: 
+    name: rundeckd
+    state: restarted
