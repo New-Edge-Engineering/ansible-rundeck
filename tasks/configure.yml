@@ -46,7 +46,7 @@
 
 - name: Configure | Ensure server url is configured (rundeck-config.properties)
   lineinfile:
-    dest: /etc/rundeck/rundeck-config.properties
+    path: /etc/rundeck/rundeck-config.properties
     regexp: "^grails.serverURL="
     line: "grails.serverURL={{ rundeck_protocol }}://{{ rundeck_domain }}"
   notify:
@@ -55,11 +55,44 @@
     - rundeck
     - configuration
 
+- name: Configure | Ensure server hostname is configured (framework.properties)
+  lineinfile:
+    path: /etc/rundeck/framework.properties
+    regexp: "^framework\\.server\\.hostname\\s*=\\s*"
+    line: "framework.server.hostname = {{ rundeck_domain }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+
+- name: Configure | Ensure server node name is configured (framework.properties)
+  lineinfile:
+    path: /etc/rundeck/framework.properties
+    regexp: "^framework\\.server\\.name\\s*=\\s*"
+    line: "framework.server.name = {{ ansible_hostname }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+
 - name: Configure | Ensure server url is configured (framework.properties)
   lineinfile:
-    dest: /etc/rundeck/framework.properties
-    regexp: "^framework\.server\.url\s*\=s*"
+    path: /etc/rundeck/framework.properties
+    regexp: "^framework\\.server\\.url\\s*=\\s*"
     line: "framework.server.url = {{ rundeck_protocol }}://{{ rundeck_domain }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+
+- name: configure | ensure profile is updated to allow forwarding
+  lineinfile:
+    path: "{{ rundeck_conf_dir }}/profile"
+    insertbefore: "\\s*-Drdeck.base="
+    line: '           -Drundeck.jetty.connector.forwarded=true \'
   notify:
     - restart rundeck
   tags:

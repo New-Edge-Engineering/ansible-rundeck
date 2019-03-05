@@ -3,7 +3,7 @@
 rundeck_jetty_jar: /var/lib/rundeck/bootstrap/jetty-all-7.6.0.v20120127.jar
 rundeck_home_dir: /var/lib/rundeck
 rundeck_conf_dir: /etc/rundeck
-rundeck_user: rundeck
+rundeck_user: "{% if ansible_os_family == 'RedHat' %}root{% else %}rundeck{% endif %}"
 rundeck_group: rundeck
 rundeck_postgresql_driver_file: postgresql-9.3-1103.jdbc3.jar # to support change in version numbers.
 rundeck_postgresql_driver_download: "https://jdbc.postgresql.org/download/{{ rundeck_postgresql_driver_file }}"

@@ -20,6 +20,19 @@
     - configuration
     - ldap
 
+- name: configure for ldap | ensure profile is updated to use LDAP module
+  replace:
+    dest: "{{ rundeck_conf_dir }}/profile"
+    regexp: '^(\s*)-Dloginmodule.name=(.*)$'
+    replace: '\1-Dloginmodule.name=ldap \\'
+  when: ansible_os_family == 'Debian'
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+    - ldap
+
 - name: configure for ldap | ensure /etc/sysconfig/rundeckd exists
   file:
     path: /etc/sysconfig/rundeckd
@@ -38,18 +51,6 @@
   with_items:
     - "JAAS_CONF={{ rundeck_conf_dir }}/jaas-ldap.conf"
     - "LOGIN_MODULE=ldap"
-  notify:
-    - restart rundeck
-  tags:
-    - rundeck
-    - configuration
-    - ldap
-
-- name: configure for ldap | ensure profile is updated to use LDAP module
-  replace:
-    dest: "{{ rundeck_conf_dir }}/profile"
-    regexp: '^(\s*)-Dloginmodule.name=(.*)$'
-    replace: '\1-Dloginmodule.name=ldap \\'
   notify:
     - restart rundeck
   tags:
