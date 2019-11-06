@@ -7,6 +7,10 @@
   become: yes
   with_items:
     - python-pip
+  tags:
+    - rundeck
+    - install
+    - packages
 
 - name: Rundeck | Install supporting python packages
   pip:
@@ -15,6 +19,10 @@
   become: yes
   with_items:
     - httplib2
+  tags:
+    - rundeck
+    - install
+    - packages
 
 - name: Rundeck | Add Bintray GPG key for rundeck repo
   apt_key:
