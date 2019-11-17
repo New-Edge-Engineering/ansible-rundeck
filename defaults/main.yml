@@ -8,18 +8,18 @@ rundeck_database_host: 'localhost'
 rundeck_database_name: 'rundeck'
 rundeck_database_user: 'rundeck'
 rundeck_database_pass: 'rundeck'
-rundeck_static_user_tokens: [] # list of users as dictionary of name and token
+rundeck_static_user_tokens: []  # list of users as dictionary of name and token
 rundeck_users: []  # list of users as dictionary of name, password and list of roles
 rundeck_plugins: []  # list of plugin urls that are downloaded and installed into the rundeck libext.
-rundeck_generate_ssh: True  # automatically generate ssh key, set to False to stop this action.
-rundeck_ldap: False
+rundeck_generate_ssh: true  # automatically generate ssh key, set to false to stop this action.
+rundeck_ldap: false
 rundeck_ldap_url: ldap://localhost:389
 rundeck_ldap_bind_user: cn=Manager,dc=example,dc=com
 rundeck_ldap_bind_pass: secret
 rundeck_ldap_user_dn: ou=People,dc=test1,dc=example,dc=com
 rundeck_ldap_user_rdn_attr: uid
 rundeck_ldap_user_id_attr: uid
-rundeck_ldap_bindinglogin: False
+rundeck_ldap_bindinglogin: false
 rundeck_ldap_user_pass_attr: userPassword
 rundeck_ldap_user_filter: account
 rundeck_ldap_role_dn: ou=Groups,dc=test1,dc=example,dc=com
@@ -27,15 +27,15 @@ rundeck_ldap_role_name_attr: cn
 rundeck_ldap_role_username_attr:
 rundeck_ldap_role_member_attr: member
 rundeck_ldap_role_filter: groupOfNames
-rundeck_ldap_netsted_groups: False
-rundeck_ldap_debug: False
-rundeck_crowd: False
+rundeck_ldap_netsted_groups: false
+rundeck_ldap_debug: false
+rundeck_crowd: false
 rundeck_crowd_name: 'RunDeck'
 rundeck_crowd_pass: 'secret'
 rundeck_crowd_url: 'http://localhost/crowd/'
 rundeck_crowd_maxconn: 20
 rundeck_crowd_timeout: 5000
-rundeck_crowd_debug: False
+rundeck_crowd_debug: false
 rundeck_crowd_jaas_jars:
   - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/commons-codec-1.2.jar
   - https://github.com/realloc/crowd-jaas/releases/download/v0.0.1/commons-httpclient-3.1.jar

@@ -54,7 +54,7 @@
   apt:
     name: rundeck
     state: present
-  notify:
+  falsetify:
     - systemd daemon-reload
     - restart rundeck
   tags:
@@ -66,8 +66,8 @@
   register: upstart_config
   stat:
     path: /etc/init/rundeckd.conf
-    get_md5: no
-    get_checksum: no
+    get_md5: false
+    get_checksum: false
   tags:
     - rundeck
     - install
