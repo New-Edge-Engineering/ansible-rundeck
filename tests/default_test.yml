@@ -1,7 +1,7 @@
 ---
 - name: Bootstrap python
   hosts: rundeck-servers
-  become: yes
+  become: true
   tasks:
     - name: Setup | Bootstrap on Debian
       raw: 'apt-get update && apt-get --no-install-recommends -yq install python python-apt'
@@ -9,12 +9,12 @@
 
 - name: test default values deployment
   hosts: rundeck-servers
-  become: yes
+  become: true
 
   pre_tasks:
     - name: Setup | Update apt-cache
       apt:
-        update_cache: yes
+        update_cache: true
       when: ansible_os_family == 'Debian'
 
     - name: Setup | Install supporting packages
@@ -22,7 +22,7 @@
         name: "{{ item }}"
         state: present
       when: ansible_os_family == 'Debian' and ansible_distribution_version|version_compare('16.04', '>=')
-      become: yes
+      become: true
       with_items:
         - python
         - python-apt

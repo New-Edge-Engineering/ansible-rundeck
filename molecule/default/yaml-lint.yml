@@ -1,0 +1,7 @@
+---
+extends: default
+ignore: .env
+rules:
+  line-length:
+    max: 160
+    level: warning

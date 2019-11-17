@@ -1,0 +1,17 @@
+---
+language: python
+services: docker
+
+install:
+  - python3 -m venv .env
+  - . .env/bin/activate
+  # Install test dependencies.
+  - pip3 install ansible molecule docker
+
+script:
+  - . .env/bin/activate
+  # Run tests.
+  - molecule test
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

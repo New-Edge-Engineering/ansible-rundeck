@@ -4,7 +4,7 @@
   yum:
     name: http://repo.rundeck.org/latest.rpm
     state: present
-  become: yes
+  become: true
   tags:
     - rundeck
     - install
@@ -14,7 +14,7 @@
   yum:
     name: rundeck
     state: present
-  become: yes
+  become: true
   notify:
     - start rundeck
   tags:
@@ -24,9 +24,8 @@
 
 - name: install redhat | ensure dependencies are installed
   package:
-    name:
-      -  libsemanage-python
-    state: installed
+    name: libsemanage-python
+    state: present
   tags:
     - rundeck
     - install
@@ -35,8 +34,8 @@
 - name: install redhat | ensure nginx can communicate to jenkins
   seboolean:
     name: httpd_can_network_connect
-    state: yes
-    persistent: yes
+    state: true
+    persistent: true
   tags:
     - rundeck
     - install

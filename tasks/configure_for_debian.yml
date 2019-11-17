@@ -3,7 +3,7 @@
 - name: Rundeck | Ensure jetty group exists
   group:
     name: jetty
-    system: yes
+    system: true
   when: ansible_os_family == 'Debian'
   tags:
     - rundeck
@@ -14,9 +14,9 @@
   user:
     name: rundeck
     groups: jetty
-    createhome: yes
+    createhome: true
     home: /var/lib/rundeck
-    system: yes
+    system: true
   when: ansible_os_family == 'Debian'
   tags:
     - rundeck

@@ -7,3 +7,8 @@
 
 # Ansible files
 *.retry
+
+# Python
+.env
+**/__pycache__/*
+
