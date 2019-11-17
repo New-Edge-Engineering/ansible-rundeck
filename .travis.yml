@@ -7,7 +7,6 @@ install:
   - pip install ansible molecule docker
 
 script:
-  - . .env/bin/activate
   # Run tests.
   - molecule test
 
