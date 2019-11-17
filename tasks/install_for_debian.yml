@@ -4,18 +4,25 @@
   apt:
     name: "{{ item }}"
     state: present
-  become: yes
+  become: true
   with_items:
     - python-pip
-    - python-setuptools
+  tags:
+    - rundeck
+    - install
+    - packages
 
 - name: Debian | Install supporting python packages
   pip:
     name: "{{ item }}"
     state: present
-  become: yes
+  become: true
   with_items:
     - httplib2
+  tags:
+    - rundeck
+    - install
+    - packages
 
 - name: Debian | Add Bintray GPG key for rundeck repo
   apt_key:

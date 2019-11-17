@@ -1,0 +1,15 @@
+---
+# extras
+- name: download rundeck plugins
+  get_url:
+    dest: /var/lib/rundeck/libext/{{ item.split('/')|last }}
+    url: "{{ item }}"
+    group: "{{ rundeck_group }}"
+    mode: 0655
+    owner: "{{ rundeck_user }}"
+  with_items: "{{ rundeck_plugins }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - plugins

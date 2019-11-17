@@ -1,187 +1,38 @@
 ---
 # install rundeck
-- include: install_debian.yml
+- include_tasks: install_for_debian.yml
   when: ansible_os_family == 'Debian'
 
-- include: install_redhat.yml
+- include_tasks: install_for_redhat.yml
   when: ansible_os_family == 'RedHat'
 
-- name: Install | add systemd service helper
-  copy:
-    src: systemd/rundeck-start
-    dest: /usr/bin/rundeck-start
-    owner: root
-    group: root
-    mode: 0755
-  when: ansible_service_mgr == 'systemd'
-  tags:
-    - rundeck
-    - install
-    - packages
-
-- name: Install | add systemd service unit
-  copy:
-    src: systemd/rundeckd.service
-    dest: /etc/systemd/system/rundeckd.service
-    owner: root
-    group: root
-    mode: 0644
-  when: ansible_service_mgr == 'systemd'
-  notify:
-    - systemd daemon-reload
-  tags:
-    - rundeck
-    - install
-    - packages
-
-- name: Install | ensure service log directory has correct ownership
-  file:
-    path: /var/log/rundeck
-    owner: rundeck
-    state: directory
-  tags:
-    - rundeck
-    - install
-    - packages
-
-- name: Install | See if there are more log files
-  find:
-    paths: /var/log/rundeck
-    file_type: file
-    patterns: "*.log"
-  register: rundeck_logfiles
-  tags:
-    - rundeck
-    - install
-    - packages
-
-- name: Install | ensure service log files have correct ownership
-  file:
-    path: "{{ item.path }}"
-    owner: rundeck
-    state: file
-  with_items:
-    "{{ rundeck_logfiles.files|default([]) }}"
-  tags:
-    - rundeck
-    - install
-    - packages
-
-- name: discover version number
-  shell: "{{ rundeck_package_command }} rundeck | grep -i version | grep -o '[0-9.]\\+'"
-  register: rundeck_targeting_version
-
-# corrections to run with other jetty applications
-#  create groups and adjust user
-- name: Install | Ensure jetty group exists
-  group:
-    name: jetty
-    system: yes
+# configure rundeck
+- include_tasks: configure_for_debian.yml
   when: ansible_os_family == 'Debian'
-  tags:
-    - rundeck
-    - users
-    - groups
 
-- name: Install | Ensure rundeck user is apart of jetty group
-  user:
-    name: rundeck
-    groups: jetty
-    createhome: yes
-    home: /var/lib/rundeck
-    system: yes
-  when: ansible_os_family == 'Debian'
-  tags:
-    - rundeck
-    - users
-    - groups
-
-- name: Install | Ensure home directory has correct permissions
-  file:
-    path: /var/lib/rundeck
-    state: directory
-    owner: rundeck
-    group: rundeck
-    mode: 0755
-  tags:
-    - rundeck
-    - users
-
-- name: Install | Ensure tmp directory has correct permissions
-  file:
-    path: /tmp/rundeck
-    state: directory
-    owner: rundeck
-    mode: 0755
-  tags:
-    - rundeck
-    - users
-
-# configuration adjustment
-- name: Install | Ensure upstart setgid is set to jetty group
-  lineinfile:
-    dest: /etc/init/rundeckd.conf
-    regexp: "^setgid "
-    line: "setgid jetty"
-  when: ansible_os_family == 'Debian'
-  notify:
-    - restart rundeck
-  tags:
-    - rundeck
-    - configuration
-
-- name: Install | Ensure server url is configured (rundeck-config.properties)
-  lineinfile:
-    dest: /etc/rundeck/rundeck-config.properties
-    regexp: "^grails.serverURL="
-    line: "grails.serverURL={{ rundeck_protocol }}://{{ rundeck_domain }}"
-  notify:
-    - restart rundeck
-  tags:
-    - rundeck
-    - configuration
-
-- name: Install | Ensure server url is configured (framework.properties)
-  lineinfile:
-    dest: /etc/rundeck/framework.properties
-    regexp: "^framework\\.server\\.url\\s*\\=s*"
-    line: "framework.server.url = {{ rundeck_protocol }}://{{ rundeck_domain }}"
-  notify:
-    - restart rundeck
-  tags:
-    - rundeck
-    - configuration
+- include_tasks: configure.yml
 
 # vendor database setup
-- include: postgresql.yml
+- include_tasks: configure_for_postgresql.yml
   when: rundeck_database_type == 'postgresql'
 
-- include: mysql.yml
+- include_tasks: configure_for_mysql.yml
   when: rundeck_database_type == 'mysql'
 
 # user management
-- include: users.yml
+- include_tasks: configure_users.yml
+
+# ssh key generation
+- include_tasks: configure_ssh.yml
+  when: rundeck_generate_ssh == True
 
 # optional LDAP integration
-- include: ldap.yml
+- include_tasks: configure_for_ldap.yml
   when: rundeck_ldap == True
 
-# optional Atlassian Crowd integration
-- include: crowd.yml
+# optional Atlassian integration
+- include: configure_for_crowd.yml
   when: rundeck_crowd == True
 
 # extras
-- name: download rundeck plugins
-  get_url:
-    dest: /var/lib/rundeck/libext/{{ item.split('/')|last }}
-    url: "{{ item }}"
-  with_items: "{{ rundeck_plugins }}"
-  notify:
-    - restart rundeck
-  tags:
-    - rundeck
-    - plugins
-
-# ssh key generation
-- include: ssh.yml
-  when: rundeck_generate_ssh == True
+- include_tasks: plugins.yml

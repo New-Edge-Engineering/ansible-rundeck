@@ -1,0 +1,100 @@
+---
+- name: Configure | Ensure home directory has correct permissions
+  file:
+    path: /var/lib/rundeck
+    state: directory
+    owner: rundeck
+    group: rundeck
+    mode: 0755
+  tags:
+    - rundeck
+    - users
+
+- name: Configure | Ensure tmp directory has correct permissions
+  file:
+    path: /tmp/rundeck
+    state: directory
+    owner: rundeck
+    mode: 0755
+  tags:
+    - rundeck
+    - users
+
+- name: Configure | Ensure tokens file exists
+  template:
+    dest: "{{ rundeck_conf_dir }}/tokens.properties"
+    src: tokens.properties.j2
+    owner: "{{ rundeck_user }}"
+    group: "{{ rundeck_group }}"
+    mode: 0640
+  when: rundeck_static_user_tokens|length > 0
+  tags:
+    - rundeck
+    - configuration
+
+- name: Configure | Ensure rundeck tokens file configuration exists
+  lineinfile:
+    dest: /etc/rundeck/framework.properties
+    regexp: "^rundeck.tokens.file=.*"
+    line: rundeck.tokens.file=/etc/rundeck/tokens.properties
+  when: rundeck_static_user_tokens|length > 0
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+
+- name: Configure | Ensure server url is configured (rundeck-config.properties)
+  lineinfile:
+    path: /etc/rundeck/rundeck-config.properties
+    regexp: "^grails.serverURL="
+    line: "grails.serverURL={{ rundeck_protocol }}://{{ rundeck_domain }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+
+- name: Configure | Ensure server hostname is configured (framework.properties)
+  lineinfile:
+    path: /etc/rundeck/framework.properties
+    regexp: "^framework\\.server\\.hostname\\s*=\\s*"
+    line: "framework.server.hostname = {{ rundeck_domain }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+
+- name: Configure | Ensure server node name is configured (framework.properties)
+  lineinfile:
+    path: /etc/rundeck/framework.properties
+    regexp: "^framework\\.server\\.name\\s*=\\s*"
+    line: "framework.server.name = {{ ansible_hostname }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+
+- name: Configure | Ensure server url is configured (framework.properties)
+  lineinfile:
+    path: /etc/rundeck/framework.properties
+    regexp: "^framework\\.server\\.url\\s*=\\s*"
+    line: "framework.server.url = {{ rundeck_protocol }}://{{ rundeck_domain }}"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+
+- name: configure | ensure profile is updated to allow forwarding
+  lineinfile:
+    path: "{{ rundeck_conf_dir }}/profile"
+    insertbefore: "\\s*-Drdeck.base="
+    line: '           -Drundeck.jetty.connector.forwarded=true \'
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration

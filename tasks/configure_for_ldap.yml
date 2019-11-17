@@ -1,0 +1,59 @@
+---
+- name: configure for ldap | ensure LDAP longin module configuration exists
+  template:
+    dest: "{{ rundeck_conf_dir }}/jaas-ldap.conf"
+    src: jaas-ldap.conf.j2
+    owner: "{{ rundeck_user }}"
+    group: "{{ rundeck_group }}"
+    mode: 0640
+
+- name: configure for ldap | ensure profile is updated to use LDAP configuration
+  replace:
+    path: "{{ rundeck_conf_dir }}/profile"
+    regexp: '^(.*)-Djava.security.auth.login.config=(.*).conf \\$'
+    replace: '\1-Djava.security.auth.login.config={{ rundeck_conf_dir }}/jaas-ldap.conf \\'
+  when: ansible_os_family == 'Debian'
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+    - ldap
+
+- name: configure for ldap | ensure profile is updated to use LDAP module
+  replace:
+    dest: "{{ rundeck_conf_dir }}/profile"
+    regexp: '^(\s*)-Dloginmodule.name=(.*)$'
+    replace: '\1-Dloginmodule.name=ldap \\'
+  when: ansible_os_family == 'Debian'
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+    - ldap
+
+- name: configure for ldap | ensure /etc/sysconfig/rundeckd exists
+  file:
+    path: /etc/sysconfig/rundeckd
+    state: touch
+  when: ansible_os_family == 'RedHat'
+  tags:
+    - rundeck
+    - configuration
+    - ldap
+
+- name: configure for ldap | ensure overrides exists in /etc/sysconfig/rundeckd
+  lineinfile:
+    path: /etc/sysconfig/rundeckd
+    line: "{{ item }}"
+  when: ansible_os_family == 'RedHat'
+  with_items:
+    - "JAAS_CONF={{ rundeck_conf_dir }}/jaas-ldap.conf"
+    - "LOGIN_MODULE=ldap"
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+    - ldap

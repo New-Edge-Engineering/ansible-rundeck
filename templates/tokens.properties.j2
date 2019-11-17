@@ -1,0 +1,4 @@
+{{ ansible_managed|comment }}
+{% for item in rundeck_static_user_tokens %}
+{{ item.username }}: {{ item.token }}
+{% endfor %}

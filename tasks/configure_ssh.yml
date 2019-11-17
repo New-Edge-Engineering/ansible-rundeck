@@ -8,8 +8,8 @@
     mode: 0700
   become: yes
   tags:
-    - ssh
     - rundeck
+    - ssh
 
 # ssh key
 - name: generate a ssh key
@@ -20,5 +20,5 @@
     ssh_key_type: rsa
   become: yes
   tags:
-    - ssh
     - rundeck
+    - ssh
