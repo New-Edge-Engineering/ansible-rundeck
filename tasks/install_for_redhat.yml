@@ -2,12 +2,7 @@
 # Redhat based OS
 - name: Redhat installation | add python 2.x.x dependencies
   pip:
-    name: "{{ item }}"
-  with_items:
-    - urllib3
-    - pyOpenSSL
-    - ndg-httpsclient
-    - pyasn1
+    name: ['urllib3', 'pyOpenSSL', 'ndg-httpsclient', 'pyasn1']
   when: ansible_python_version is version('2.7', '<')
   tags:
     - rundeck
