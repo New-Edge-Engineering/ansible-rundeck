@@ -20,13 +20,13 @@ def test_rundeck_is_installed(host):
 
 
 def test_rundeck_running_and_enabled(host):
-    rundeck = host.service("rundeck")
+    rundeck = host.service("rundeckd")
     assert rundeck.is_running
     assert rundeck.is_enabled
 
 
 def test_rundeck_listening_http(host):
-    socket = host.socket('tcp://localhost:4440')
+    socket = host.socket('tcp://127.0.0.1:4440')
 
     assert socket.is_listening
 
