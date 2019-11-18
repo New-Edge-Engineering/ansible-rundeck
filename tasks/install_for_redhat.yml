@@ -1,6 +1,20 @@
 ---
 # Redhat based OS
-- name: install redhat | set rundeck rpm
+- name: Redhat installation | add python 2.x.x dependencies
+  pip:
+    name: "{{ item }}"
+  with_items:
+    - urllib3
+    - pyOpenSSL
+    - ndg-httpsclient
+    - pyasn1
+  when: ansible_python_version is version('2.7', '<')
+  tags:
+    - rundeck
+    - install
+    - packages
+
+- name: Redhat installation | set rundeck rpm
   yum:
     name: http://repo.rundeck.org/latest.rpm
     state: present
@@ -10,7 +24,7 @@
     - install
     - packages
 
-- name: install redhat | get rundeck rpm
+- name: Redhat installation | get rundeck rpm
   yum:
     name: rundeck
     state: present
@@ -22,20 +36,20 @@
     - install
     - packages
 
-- name: install redhat | check is getenforce installed
+- name: Redhat installation | check is getenforce installed
   shell: command -v getenforce >/dev/null 2>&1
   register: is_getenforce_exist
   changed_when: false
   ignore_errors: true
 # this task runs 'getenforce' and registers the result into the "sestatus" variable
 # changed_when: false tells ansible never to mark this task as "changed"
-- name: install redhat | test to see if selinux is running
+- name: Redhat installation | test to see if selinux is running
   command: getenforce
   register: sestatus
   changed_when: false
   when: is_getenforce_exist.rc == 0
 
-- name: install redhat | ensure dependencies are installed
+- name: Redhat installation | ensure dependencies are installed
   package:
     name: "{{ item }}"
     state: present
@@ -48,7 +62,7 @@
     - install
     - selinux
 
-- name: install redhat | ensure nginx can communicate to rundeck
+- name: Redhat installation | ensure nginx can communicate to rundeck
   seboolean:
     name: httpd_can_network_connect
     state: true
