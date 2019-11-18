@@ -8,7 +8,9 @@
   register: rundeck_jetty_jar
 
 - name: Users | encode users password
-  shell: "java -cp {{ rundeck_jetty_jar.files[0].path }} org.eclipse.jetty.util.security.Password {{ item.name }} {{ item.password }} 2>&1 | grep MD5"
+  shell: |
+    set -o pipefail
+    "java -cp {{ rundeck_jetty_jar.files[0].path }} org.eclipse.jetty.util.security.Password {{ item.name }} {{ item.password }} 2>&1 | grep MD5"
   become: true
   register: rundeck_encoded_users
   when: rundeck_users|length > 0 and rundeck_jetty_jar['matched'] > 0
@@ -21,7 +23,7 @@
     dest: /etc/rundeck/realm.properties
     owner: rundeck
     group: rundeck
-  when: rundeck_users|length > 0 and rundeck_encoded_users|success
+  when: rundeck_users|length > 0 and rundeck_encoded_users is successful
   notify:
     - restart rundeck
   tags:

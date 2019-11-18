@@ -1,7 +1,8 @@
 ---
 - name: systemd daemon-reload
   become: true
-  command: systemctl daemon-reload
+  systemd:
+    daemon_reload: true
   when: ansible_service_mgr == 'systemd'
 
 - name: start rundeck

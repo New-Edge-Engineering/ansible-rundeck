@@ -1,5 +1,6 @@
 ---
-- name: Converge
-  hosts: all
+- hosts: all
   roles:
-    - role: .
+    - role: geerlingguy.java
+      become: true
+    - role: ansible-rundeck

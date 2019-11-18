@@ -24,15 +24,15 @@
 
 # ssh key generation
 - include_tasks: configure_ssh.yml
-  when: rundeck_generate_ssh == True
+  when: rundeck_generate_ssh|bool
 
 # optional LDAP integration
 - include_tasks: configure_for_ldap.yml
-  when: rundeck_ldap == True
+  when: rundeck_ldap|bool
 
 # optional Atlassian integration
 - include: configure_for_crowd.yml
-  when: rundeck_crowd == True
+  when: rundeck_crowd|bool
 
 # extras
 - include_tasks: plugins.yml
