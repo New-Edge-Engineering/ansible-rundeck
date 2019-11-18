@@ -14,6 +14,14 @@ lint:
 platforms:
   - name: centos-7
     image: centos:7
+  - name: centos-6
+    image: centos:6
+  - name: ubuntu-18-04
+    image: ubuntu:18.04
+  - name: ubuntu-16-04
+    image: ubuntu:16.04
+  - name: ubuntu-14-04
+    image: ubuntu:14.04
 provisioner:
   name: ansible
   lint:
