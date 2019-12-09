@@ -3,6 +3,7 @@
 rundeck_download_path: "{{ temp_dir }}"
 rundeck_protocol: "http"  # the protocol that the web application is accessed by.
 rundeck_domain: "localhost:4440"  # the domain that the web application is associated with.
+rundeck_http_port: 4440 # listen port; may differ from port number in domain if behind a proxy
 rundeck_database_type: 'hsqldb'
 rundeck_database_host: 'localhost'
 rundeck_database_name: 'rundeck'
