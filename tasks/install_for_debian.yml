@@ -54,7 +54,7 @@
   apt:
     name: rundeck
     state: present
-  falsetify:
+  notify:
     - systemd daemon-reload
     - restart rundeck
   tags:
