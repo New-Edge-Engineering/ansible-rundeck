@@ -7,6 +7,16 @@
       raw: 'apt-get update && apt-get --no-install-recommends -yq install python python-apt'
       when: ansible_os_family == "Ubuntu" or ansible_os_family == "Debian"
 
+- name: set libsemanage | CentOS 7 different name
+  set_fact:
+    libsemanage: 'libsemanage-python'
+    when: ansible_distribution_major_version < "8"
+
+- name: set libsemanage | CentOS 8 different name
+  set_fact:
+    libsemanage: 'python3-libsemanage'
+    when: ansible_distribution_major_version >= "8"
+
 - name: test default values deployment
   hosts: rundeck-servers
   become: true
@@ -33,7 +43,7 @@
         state: present
       when: ansible_os_family == 'RedHat'
       with_items:
-        - libselinux-python
+        - "{{ libsemanage }}"
 
   roles: # checked out roles rather than installed via ansible galaxy.
     - ansible-java-role

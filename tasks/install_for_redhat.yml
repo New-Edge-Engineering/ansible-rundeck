@@ -44,14 +44,23 @@
   changed_when: false
   when: is_getenforce_exist.rc == 0
 
+- name: set pythonlibs | CentOS 7 different name
+  set_fact:
+    pythonlibs: [ 'libsemanage-python', 'libselinux-python' ]
+    when: ansible_distribution_major_version < "8"
+
+- name: set pythonlibs | CentOS 8 different name
+  set_fact:
+    pythonlibs: [ 'python3-libsemanage', 'python3-libselinux' ]
+    when: ansible_distribution_major_version >= "8"
+
 - name: Redhat installation | ensure dependencies are installed
   package:
     name: "{{ item }}"
     state: present
   when: is_getenforce_exist.rc == 0 and sestatus is defined and "Enabled" in sestatus.stdout
   with_items:
-    - libsemanage-python
-    - libselinux-python
+    - "{{ pythonlibs }}"
   tags:
     - rundeck
     - install
