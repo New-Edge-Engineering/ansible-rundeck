@@ -23,8 +23,8 @@
     - rundeck
     - users
     - groups
-
 # configuration adjustment
+
 - name: Rundeck | Ensure upstart setgid is set to jetty group
   lineinfile:
     dest: /etc/init/rundeckd.conf
@@ -36,3 +36,12 @@
   tags:
     - rundeck
     - configuration
+
+- debug:
+    var: ansible_service_mgr
+
+- debug:
+    var: ansible_distribution
+
+- debug:
+    var: ansible_distribution_major_version

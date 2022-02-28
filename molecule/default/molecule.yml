@@ -7,23 +7,32 @@ dependency:
   role-file: requirements.yml
 driver:
   name: docker
+platforms:
+  # epel repo failed.
+  # - name: aws
+  #   image: amazonlinux:latest
+  - name: default-centos-7
+    image: centos:7
+  # Default python to old to access SNI resource.
+  # - name: centos-6
+  #   image: centos:6
+  # Rundeck does not detect sysvinit
+  # - name: default-ubuntu-18-04
+  #   image: ubuntu:18.04
+  - name: default-ubuntu-16-04
+    image: ubuntu:16.04
+  # Unable to install the correct Java.
+  # - name: ubuntu-14-04
+  #   image: ubuntu:14.04
 lint:
   name: yamllint
   options:
     config-file: molecule/default/yaml-lint.yml
-platforms:
-  - name: centos-7
-    image: centos:7
-  - name: centos-6
-    image: centos:6
-  - name: ubuntu-18-04
-    image: ubuntu:18.04
-  - name: ubuntu-16-04
-    image: ubuntu:16.04
-  - name: ubuntu-14-04
-    image: ubuntu:14.04
 provisioner:
   name: ansible
+  prepare: ./prepare.yml
+  # options:
+  #   vvv: true
   lint:
     name: ansible-lint
 verifier:

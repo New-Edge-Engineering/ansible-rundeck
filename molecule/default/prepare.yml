@@ -1,0 +1,80 @@
+---
+- hosts: all
+  become: true
+  tasks:
+# Debian
+  - name: Debian prepare | Correct locale
+    command: locale-gen en_GB.UTF-8
+    when: ansible_os_family == 'Debian' and ansible_distribution_version is version('14.04', '==')
+
+  - name: Debian prepare | Install supporting packages
+    apt:
+      name: ["python", "python-pip"]
+      state: present
+    when: ansible_os_family == 'Debian'
+
+  - name: Debian prepare | Update apt-cache
+    apt:
+      update_cache: true
+    when: ansible_os_family == 'Debian'
+
+  - name:  Debian prepare | Install supporting python packages
+    pip:
+      name: httplib2
+      state: present
+    when: ansible_os_family == 'Debian'
+
+# RedHat
+  - name: RedHat prepare | add EPEL
+    yum_repository:
+      name: "epel"
+      description: "EPEL Release Repository"
+      baseurl: "http://download.fedoraproject.org/pub/epel/$releasever/$basearch/"
+      mirrorlist: "http://mirrors.fedoraproject.org/metalink?repo=epel-$releasever&arch=$basearch"
+      enabled: true
+      gpgcheck: false
+      state: "present"
+    when: ansible_os_family == 'RedHat'
+
+  - name: RedHat prepare | Install supporting packages
+    yum:
+      name: "libselinux-python"
+      state: present
+    when: ansible_os_family == 'RedHat'
+
+  - name: Install apt packages for SNI fix
+    apt:
+      name:
+        - python-dev
+        - libffi-dev
+        - libssl-dev
+    when:
+      - ansible_python_version is version('2.7.9', '<')
+      - ansible_os_family == 'Debian'
+
+  - name: Install yum packages for SNI fix
+    yum:
+      name:
+        - python-pip
+        - python-devel
+        - libffi-devel
+        - openssl-devel
+    when:
+      - ansible_python_version is version('2.7.9', '<')
+      - ansible_os_family == 'RedHat'
+
+  - name: Upgrade Pip for SNI fix
+    pip:
+      name: pip>=18
+    when:
+      - ansible_python_version is version('2.7.9', '<')
+
+  - name: Install Python packages for SNI fix
+    pip:
+      extra_args: -I
+      name:
+        - pyopenssl>=18.0.0
+        - ndg-httpsclient>=0.5.1
+        - pyasn1>=0.4.5
+    when:
+      - ansible_python_version is version_compare('2.7.9', '<')

@@ -7,7 +7,7 @@
   tasks:
     - name: Setup | Are we on Debian?
       raw: 'lsb_release -si'
-      register: lsb_release
+      register: lsb_release  # ansible_lsb["id"]
 
     - name: Setup | Bootstrap on Debian
       raw: 'apt-get update && apt-get --no-install-recommends -yq install python python-apt'

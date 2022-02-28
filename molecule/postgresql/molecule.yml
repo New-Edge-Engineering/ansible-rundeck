@@ -1,0 +1,32 @@
+---
+dependency:
+  name: galaxy
+  options:
+    ignore-certs: true
+    ignore-errors: true
+  role-file: ./requirements.yml 
+driver:
+  name: docker
+platforms:
+  - name: postgresql-centos-7
+    image: centos:7
+    dockerfile: ../default/Dockerfile.j2
+  - name: postgresql-ubuntu-16-04
+    image: ubuntu:16.04
+    dockerfile: ../default/Dockerfile.j2
+lint:
+  name: yamllint
+  options:
+    config-file: ../default/yaml-lint.yml
+provisioner:
+  name: ansible
+  prepare: ../default/prepare.yml
+  no_log: false
+  # options:
+  #   vvv: true
+  lint:
+    name: ansible-lint
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

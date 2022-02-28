@@ -1,0 +1,21 @@
+- name: SELinux configuration | ensure dependencies are installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libsemanage-python
+    - libselinux-python
+  tags:
+    - rundeck
+    - install
+    - selinux
+
+- name: SELinux configuration | ensure nginx can communicate to rundeck
+  seboolean:
+    name: httpd_can_network_connect
+    state: true
+    persistent: true
+  tags:
+    - rundeck
+    - install
+    - selinux

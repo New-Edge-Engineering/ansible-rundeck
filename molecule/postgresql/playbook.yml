@@ -1,0 +1,23 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - role: geerlingguy.java
+    - role: postgresql
+      postgresql_databases:
+        - name: rundeck
+      postgresql_users:
+        -
+          name: rundeck
+          password: rund3ck
+          encrypted: no
+      postgresql_user_privileges:
+        -
+          name: rundeck
+          db: rundeck
+          priv: "ALL"
+    - role: ansible-rundeck
+      rundeck_database_type: postgresql
+      rundeck_database_pass: rund3ck
+    - role: ansible-rundeck
+

@@ -1,12 +1,15 @@
 ---
 # install rundeck
-- include_tasks: install_for_debian.yml
-  when: ansible_os_family == 'Debian'
+- include_tasks: install_via_apt.yml
+  when: ansible_pkg_mgr == 'apt'
 
-- include_tasks: install_for_redhat.yml
-  when: ansible_os_family == 'RedHat'
+- include_tasks: install_via_yum.yml
+  when: ansible_pkg_mgr == 'yum'
 
 # configure rundeck
+- include_tasks: configure_for_selinux.yml
+  when: ansible_selinux["status"] == "enabled"
+
 - include_tasks: configure_for_debian.yml
   when: ansible_os_family == 'Debian'
 
