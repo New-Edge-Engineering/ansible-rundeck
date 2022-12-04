@@ -15,6 +15,17 @@
 
 - include_tasks: configure.yml
 
+- name: Install | Ensure port number is configured
+  lineinfile:
+    dest: "{{ rundeck_conf_dir }}/profile"
+    regexp: '^RDECK_HTTP_PORT=(.*)$'
+    line: 'RDECK_HTTP_PORT=${RDECK_HTTP_PORT:-{{ rundeck_http_port }}}'
+  notify:
+    - restart rundeck
+  tags:
+    - rundeck
+    - configuration
+
 # vendor database setup
 - include_tasks: configure_for_postgresql.yml
   when: rundeck_database_type == 'postgresql'
